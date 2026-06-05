@@ -3710,7 +3710,7 @@
   // ── Synkroniser data med Firestore ──
   async function lagreTilSky(userId) {
     try {
-      await setDoc(doc(db, 'brukere', userId), {
+      await setDoc(doc(db, 'horizon', userId), {
         aktiviteter: JSON.parse(localStorage.getItem('lp_a') || '[]'),
         oppgaver:    JSON.parse(localStorage.getItem('lp_o') || '[]'),
         todos:       JSON.parse(localStorage.getItem('lp_t') || '[]'),
@@ -3740,7 +3740,7 @@
       window._currentUid = bruker.uid;
 
       // Hent data fra Firestore
-      const snap = await getDoc(doc(db, 'brukere', bruker.uid));
+      const snap = await getDoc(doc(db, 'horizon', bruker.uid));
       if (snap.exists()) {
         const data = snap.data();
         localStorage.setItem('lp_a', JSON.stringify(data.aktiviteter || []));
@@ -3765,7 +3765,7 @@
 
       // Lytt på endringer fra andre enheter – hopp over første snapshot (allerede lastet via getDoc)
       let firstSnapshot = true;
-      window._unsub = onSnapshot(doc(db, 'brukere', bruker.uid), snap => {
+      window._unsub = onSnapshot(doc(db, 'horizon', bruker.uid), snap => {
         if (firstSnapshot) { firstSnapshot = false; return; }
         if (!snap.exists()) return;
         const data = snap.data();
