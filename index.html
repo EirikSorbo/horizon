@@ -1,0 +1,3803 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Horizon Proposal</title>
+  <meta name="theme-color" content="#D4500A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Horizon">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23D4500A'/%3E%3Ctext x='50' y='73' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='64' fill='white'%3EH%3C/text%3E%3C/svg%3E" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23D4500A'/%3E%3Ctext x='50' y='73' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='64' fill='white'%3EH%3C/text%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --grønn:       #D4500A;
+      --grønn-lys:   #FEF0E6;
+      --grønn-mørk:  #7C2C00;
+      --grønn-mid:   #EDBD9E;
+      --tekst:       #1E140A;
+      --tekst-sek:   #7A5540;
+      --kant:        #E5CCBA;
+      --bg:          #F8F3EE;
+      --hvit:        #ffffff;
+      --r:           12px;
+      --rs:          8px;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--tekst);
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--hvit);
+      border-bottom: 1px solid var(--kant);
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 58px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-handlinger {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .header-knapp {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--kant);
+      background: var(--hvit);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--tekst-sek);
+      font-size: 18px;
+      line-height: 1;
+      transition: all .15s;
+    }
+    .header-knapp:hover { background: var(--grønn-lys); color: var(--grønn); border-color: var(--grønn-mid); }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--grønn);
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-variant-numeric: lining-nums;
+      font-feature-settings: "lnum" 1;
+    }
+
+    .logo-ikon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .dato-idag {
+      font-size: 13px;
+      color: var(--tekst-sek);
+      font-weight: 600;
+    }
+
+    /* ── Tabs ── */
+    .faner {
+      display: flex;
+      justify-content: center;
+      background: var(--hvit);
+      border-bottom: 1px solid var(--kant);
+      padding: 0;
+      position: sticky;
+      top: 58px;
+      z-index: 99;
+    }
+
+    .fane {
+      flex: 1;
+      padding: 13px 4px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.3px;
+      color: var(--tekst-sek);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color .15s, border-color .15s;
+      text-transform: uppercase;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .fane:hover { color: var(--grønn); }
+    .fane.aktiv { color: var(--grønn); border-bottom-color: var(--grønn); }
+
+    /* ── Main ── */
+    main {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 20px 12px 64px;
+    }
+
+    .panel { display: none; }
+    .panel.aktiv { display: block; }
+
+    /* ── Shared ── */
+    .seksjon-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .seksjon-tittel {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--tekst);
+    }
+
+    .legg-til-knapp {
+      background: var(--grønn);
+      color: white;
+      border: none;
+      border-radius: var(--rs);
+      padding: 9px 16px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      transition: background .15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legg-til-knapp:hover { background: var(--grønn-mørk); }
+
+    .kort-container {
+      background: var(--hvit);
+      border-radius: var(--r);
+      border: 1px solid var(--kant);
+      overflow: hidden;
+    }
+
+    .tom-melding {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--tekst-sek);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .maaned-label {
+      padding: 12px 20px 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--tekst-sek);
+      background: var(--grønn-lys);
+      border-bottom: 1px solid var(--kant);
+    }
+
+    /* ── Activity card ── */
+    .aktivitet-kort {
+      padding: 13px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid var(--kant);
+      cursor: pointer;
+      transition: background .1s;
+    }
+    .aktivitet-kort:last-child { border-bottom: none; }
+    .aktivitet-kort.hover-ai:hover    { background: #eeedfb; }
+    .aktivitet-kort.hover-seed:hover  { background: #ebf8ef; }
+    .aktivitet-kort.hover-admin:hover { background: #eae9f8; }
+    .aktivitet-kort.hover-annet:hover { background: #fce8f0; }
+
+    .type-badge {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      background: transparent;
+      border: 1.5px solid;
+    }
+    .type-badge.ai     { border-color: #9490d4; color: #9490d4; }
+    .type-badge.seed   { border-color: #72c088; color: #72c088; }
+    .type-badge.admin  { border-color: #5b9bd5; color: #5b9bd5; }
+    .type-badge.annet  { border-color: #d9729a; color: #d9729a; }
+
+    .aktivitet-info { flex: 1; min-width: 0; }
+    .aktivitet-tittel {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--tekst);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .aktivitet-meta { font-size: 12px; color: var(--tekst-sek); margin-top: 2px; }
+
+    .ikon-knapp {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--rs);
+      border: 1px solid var(--kant);
+      background: var(--hvit);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--tekst-sek);
+      font-size: 13px;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+    .ikon-knapp:hover { background: var(--grønn-lys); color: var(--grønn); border-color: var(--grønn-mid); }
+
+    /* ── Calendar ── */
+    .kalender-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .maaned-tittel {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--tekst);
+      text-transform: capitalize;
+    }
+
+    .nav-knapp {
+      background: var(--hvit);
+      border: 1px solid var(--kant);
+      border-radius: var(--rs);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--tekst-sek);
+      font-size: 18px;
+      transition: all .15s;
+      line-height: 1;
+    }
+    .nav-knapp:hover { background: var(--grønn-lys); color: var(--grønn); border-color: var(--grønn-mid); }
+
+    .kalender-grid {
+      background: var(--hvit);
+      border-radius: var(--r);
+      border: 1px solid var(--kant);
+      overflow: hidden;
+    }
+
+    .dag-navn-rad {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: var(--grønn-lys);
+      border-bottom: 1px solid var(--kant);
+    }
+
+    .dag-navn {
+      padding: 9px 4px;
+      text-align: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--grønn);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .dager-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .dag-celle {
+      min-height: 76px;
+      padding: 7px 6px 6px;
+      border-right: 1px solid var(--kant);
+      border-bottom: 1px solid var(--kant);
+      cursor: pointer;
+      transition: background .1s;
+      position: relative;
+    }
+    .dag-celle:nth-child(7n) { border-right: none; }
+    .dag-celle:hover { background: var(--grønn-lys); }
+    .dag-celle.annen-maaned { opacity: 0.3; pointer-events: none; }
+
+    .dag-nr {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--tekst);
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin-bottom: 4px;
+    }
+
+    .dag-celle.i-dag .dag-nr {
+      background: var(--grønn);
+      color: white;
+    }
+
+    .dag-celle.valgt { background: var(--grønn-lys); }
+    .dag-celle.valgt .dag-nr { outline: 2px solid var(--grønn); }
+
+    .prikke-rad {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      justify-content: center;
+    }
+
+    .prikk {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Selected day panel */
+    .valgt-dag-panel {
+      margin-top: 14px;
+      background: var(--hvit);
+      border-radius: var(--r);
+      border: 1px solid var(--kant);
+      overflow: hidden;
+      display: none;
+    }
+    .valgt-dag-panel.vis { display: block; }
+
+    .valgt-dag-header {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--kant);
+      background: var(--grønn-lys);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .valgt-dag-tittel {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--grønn-mørk);
+    }
+
+    .dag-seksjon-header {
+      padding: 10px 20px 8px;
+      background: var(--grønn-lys);
+      border-bottom: 1px solid var(--kant);
+      border-top: 1px solid var(--kant);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dag-seksjon-header:first-child { border-top: none; }
+    .dag-seksjon-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--tekst-sek);
+    }
+    .dag-seksjon-legg-til {
+      background: none;
+      border: 1px solid var(--grønn-mid);
+      border-radius: var(--rs);
+      padding: 3px 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--grønn);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .dag-seksjon-legg-til:hover { background: var(--grønn-lys); }
+
+    /* ── Tasks ── */
+    .filter-rad {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .filter-pill {
+      padding: 6px 13px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--kant);
+      background: var(--hvit);
+      color: var(--tekst-sek);
+      cursor: pointer;
+      transition: all .15s;
+      font-family: 'Syne', sans-serif;
+      letter-spacing: 0.2px;
+    }
+    .filter-pill:hover { border-color: var(--grønn-mid); color: var(--grønn); }
+    .filter-pill.aktiv { background: var(--grønn); color: white; border-color: var(--grønn); }
+
+    /* Kategori-farger – alltid synlig (border + tekst), fylt når aktiv */
+    .filter-pill.ekskluder {
+      opacity: 0.45;
+      text-decoration: line-through;
+    }
+    .filter-pill.farge-ai    { border-color: #9490d4;  color: #9490d4; }
+    .filter-pill.farge-seed   { border-color: #72c088;  color: #72c088; }
+    .filter-pill.farge-admin  { border-color: #5b9bd5;  color: #5b9bd5; }
+    .filter-pill.farge-annet  { border-color: #d9729a;  color: #d9729a; }
+    .filter-pill.aktiv-ai     { background: #9490d4;    color: white; border-color: #9490d4; }
+    .filter-pill.aktiv-seed   { background: #72c088;    color: white; border-color: #72c088; }
+    .filter-pill.aktiv-admin  { background: #5b9bd5;    color: white; border-color: #5b9bd5; }
+    .filter-pill.aktiv-annet  { background: #d9729a;    color: white; border-color: #d9729a; }
+    .filter-pill.fullforte      { background: #f0f0f0; color: #888; border-color: #ccc; }
+    .filter-pill.fullforte.aktiv{ background: #999;    color: white; border-color: #999; }
+
+    /* ── Sveip for å slette ── */
+    .sveip-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--r);
+    }
+    .sveip-container + .besk-panel { border-radius: 0 0 var(--r) var(--r); }
+    .sveip-bakgrunn {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 16px;
+      pointer-events: none;
+      border-radius: var(--r);
+    }
+    .sveip-bakgrunn .slett-sirkel {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #c0392b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.6);
+      transition: opacity 0.15s, transform 0.15s;
+      flex-shrink: 0;
+    }
+    .sveip-bakgrunn.vis .slett-sirkel {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .sveip-innhold {
+      position: relative;
+      background: var(--hvit);
+      transition: transform 0.2s ease;
+      will-change: transform;
+      border-radius: var(--r);
+    }
+    .sveip-innhold.ingen-trans { transition: none; }
+
+    /* ── Oppgave type-stripe ── */
+    .oppgave-kort {
+      padding: 13px 20px 13px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      border-bottom: 1px solid var(--kant);
+      transition: background .1s;
+      border-left: 4px solid transparent;
+    }
+    .oppgave-kort.stripe-ai     { border-left-color: #9490d4; }
+    .oppgave-kort.stripe-seed   { border-left-color: #72c088; }
+    .oppgave-kort.stripe-admin  { border-left-color: #5b9bd5; }
+    .oppgave-kort.stripe-annet  { border-left-color: #d9729a; }
+    .oppgave-kort.stripe-fri    { border-left-color: var(--grønn-mid); }
+    .oppgave-kort:last-child { border-bottom: none; }
+    .oppgave-kort.stripe-ai:hover     { background: #eeedfb; }
+    .oppgave-kort.stripe-seed:hover   { background: #ebf8ef; }
+    .oppgave-kort.stripe-admin:hover  { background: #eae9f8; }
+    .oppgave-kort.stripe-annet:hover  { background: #fce8f0; }
+    .oppgave-kort.stripe-fri:hover    { background: var(--grønn-lys); }
+    .oppgave-kort.fullfort { opacity: 0.55; }
+
+    .checkbox { display: none; }
+    .checkbox.sjekket {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+      background: var(--grønn);
+      border: 2px solid var(--grønn);
+    }
+
+    .oppgave-info { flex: 1; min-width: 0; }
+
+    .oppgave-besk {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--tekst);
+    }
+    .oppgave-kort.fullfort .oppgave-besk {
+      text-decoration: line-through;
+    }
+
+    .oppgave-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 5px;
+      align-items: center;
+    }
+
+    .frist-tekst {
+      font-size: 12px;
+      color: var(--tekst-sek);
+    }
+    .frist-tekst.forfalt { color: var(--kamp); font-weight: 600; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 15, 50, 0.45);
+      z-index: 200;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 16px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+    .modal-overlay.vis { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--hvit);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 440px;
+      overflow: visible;
+      transform: translateY(12px) scale(0.99);
+      transition: transform .2s;
+      border: 1px solid var(--kant);
+      margin: auto 0;
+      flex-shrink: 0;
+    }
+    .modal-overlay.vis .modal { transform: translateY(0) scale(1); }
+
+    .modal-header {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--kant);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-tittel {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--tekst);
+    }
+
+    .lukk-knapp {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--tekst-sek);
+      font-size: 22px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      line-height: 1;
+      transition: all .15s;
+    }
+    .lukk-knapp:hover { background: var(--grønn-lys); color: var(--grønn); }
+
+    .modal-body {
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .felt { display: flex; flex-direction: column; gap: 5px; }
+
+    .felt label {
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--tekst-sek);
+    }
+
+    .felt input,
+    .felt select,
+    .felt textarea {
+      border: 1px solid var(--kant);
+      border-radius: var(--rs);
+      padding: 9px 11px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--tekst);
+      background: var(--bg);
+      outline: none;
+      transition: border-color .15s, background .15s;
+      -webkit-text-size-adjust: 100%;
+    }
+    .felt input:focus,
+    .felt select:focus,
+    .felt textarea:focus {
+      border-color: var(--grønn);
+      background: var(--hvit);
+    }
+    .felt textarea { resize: vertical; min-height: 72px; }
+
+    .felt-rad { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .modal-footer {
+      padding: 14px 22px 18px;
+      border-top: 1px solid var(--kant);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .knapp-primær {
+      background: var(--grønn);
+      color: white;
+      border: none;
+      border-radius: var(--rs);
+      padding: 9px 20px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .knapp-primær:hover { background: var(--grønn-mørk); }
+
+    .knapp-sek {
+      background: var(--hvit);
+      color: var(--tekst-sek);
+      border: 1px solid var(--kant);
+      border-radius: var(--rs);
+      padding: 9px 16px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .knapp-sek:hover { border-color: var(--grønn-mid); color: var(--grønn); }
+
+    .knapp-slett {
+      background: none;
+      color: var(--kamp);
+      border: 1px solid #f0cece;
+      border-radius: var(--rs);
+      padding: 9px 14px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .knapp-slett:hover { background: #fdf2f2; }
+
+    .knapp-gruppe { display: flex; gap: 8px; }
+
+    /* ── Oppgave-indikator på aktivitetskort ── */
+    .oppgave-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid;
+      background: var(--hvit);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: Georgia, serif;
+      cursor: pointer;
+      transition: opacity .15s;
+      flex-shrink: 0;
+    }
+    .oppgave-badge:hover { opacity: 0.7; }
+    .oppgave-badge.badge-ai    { border-color: #9490d4; color: #9490d4; }
+    .oppgave-badge.badge-seed  { border-color: #72c088; color: #72c088; }
+    .oppgave-badge.badge-admin { border-color: #5b9bd5; color: #5b9bd5; }
+    .oppgave-badge.badge-annet { border-color: #d9729a; color: #d9729a; }
+
+    .tilknyttet-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1.5px solid;
+      background: transparent;
+    }
+    .tilknyttet-chip.chip-ai    { border-color: #9490d4; color: #9490d4; }
+    .tilknyttet-chip.chip-seed  { border-color: #72c088; color: #72c088; }
+    .tilknyttet-chip.chip-admin { border-color: #5b9bd5; color: #5b9bd5; }
+    .tilknyttet-chip.chip-annet { border-color: #d9729a; color: #d9729a; }
+
+    /* ── Frist-velger i oppgavemodal ── */
+    .frist-valg {
+      border: 1px solid var(--kant);
+      border-radius: var(--rs);
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .frist-rad {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--kant);
+      transition: background .1s;
+    }
+    .frist-rad:last-child { border-bottom: none; }
+    .frist-rad:hover { background: var(--grønn-lys); }
+
+    .frist-sirkel {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--kant);
+      flex-shrink: 0;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .frist-rad.aktiv .frist-sirkel {
+      border-color: var(--grønn);
+      background: var(--grønn);
+    }
+    .frist-rad.aktiv .frist-sirkel::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: white;
+    }
+
+    .frist-tekst-rad {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--tekst);
+    }
+    .frist-rad.aktiv .frist-tekst-rad {
+      color: var(--grønn-mørk);
+      font-weight: 700;
+    }
+
+    .frist-eg-felt {
+      margin-top: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .frist-eg-felt.vis { display: flex; }
+
+    /* ── To do ── */
+    .todo-hurtigknapper {
+      display: flex;
+      gap: 8px;
+      padding: 14px 0 10px;
+      flex-wrap: wrap;
+    }
+    .todo-hurtig-knapp {
+      flex: 1;
+      min-width: 90px;
+      background: var(--hvit);
+      border: 1.5px solid var(--kant);
+      border-radius: var(--rs);
+      padding: 9px 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--grønn);
+      cursor: pointer;
+      text-align: center;
+      transition: background .15s, border-color .15s;
+    }
+    .todo-hurtig-knapp:hover { background: var(--grønn-lys); border-color: var(--grønn-mid); }
+
+    .todo-kort {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      background: var(--hvit);
+      border-bottom: 1px solid var(--kant);
+      cursor: pointer;
+      transition: background .15s;
+      position: relative;
+    }
+    .todo-kort:hover { background: var(--grønn-lys); }
+    .todo-kort:last-child { border-bottom: none; }
+    .todo-kort.fullfort .todo-tittel { text-decoration: line-through; opacity: 0.4; }
+
+    .todo-cb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--grønn-mid);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+      background: var(--hvit);
+      cursor: pointer;
+    }
+    .todo-cb.sjekket { background: var(--grønn); border-color: var(--grønn); }
+    .todo-cb:hover:not(.sjekket) { border-color: var(--grønn); }
+
+    .todo-info { flex: 1; min-width: 0; }
+    .todo-tittel { font-size: 13px; font-weight: 600; color: var(--tekst); }
+    .todo-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; align-items: center; }
+
+    /* ── Kategorioversikt-knapper ── */
+    .kat-oversikt-rad {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 0 0 12px;
+    }
+    .kat-oversikt-knapp {
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1.5px solid;
+      background: transparent;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .kat-oversikt-knapp:hover { opacity: 0.7; }
+
+    /* ── Kategorioversikt-modal ── */
+    .kat-oversikt-seksjon {
+      margin-bottom: 18px;
+    }
+    .kat-oversikt-seksjon-tittel {
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      color: var(--tekst-sek);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .kat-oversikt-akt {
+      padding: 10px 12px;
+      background: var(--hvit);
+      border-radius: var(--rs);
+      border: 1px solid var(--kant);
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: background .12s;
+    }
+    .kat-oversikt-akt:hover { background: var(--grønn-lys); }
+    .kat-oversikt-akt-tittel {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--tekst);
+    }
+    .kat-oversikt-akt-dato {
+      font-size: 11px;
+      color: var(--tekst-sek);
+      margin-top: 2px;
+    }
+    .kat-oversikt-oppgave {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px 6px 24px;
+      font-size: 12px;
+      color: var(--tekst);
+      cursor: pointer;
+      transition: background .1s;
+      border-radius: var(--rs);
+    }
+    .kat-oversikt-oppgave:hover { background: var(--grønn-lys); }
+    .kat-oversikt-oppgave.fullfort-opp { opacity: 0.4; text-decoration: line-through; }
+
+    .info-ikon-knapp {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid var(--kant);
+      background: var(--hvit);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--tekst-sek);
+      transition: background .15s, border-color .15s, color .15s;
+      flex-shrink: 0;
+    }
+    .info-ikon-knapp:hover { background: var(--grønn-lys); border-color: var(--grønn-mid); color: var(--grønn); }
+    .info-ikon-knapp.slett:hover { background: #fdeaea; border-color: #f5b8b8; color: #c0392b; }
+
+    /* ── Kalender visningsvalg ── */
+    .kal-visning-toggle {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+      background: var(--grønn-lys);
+      border-radius: var(--rs);
+      padding: 3px;
+    }
+    .kal-toggle-knapp {
+      flex: 1;
+      padding: 6px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--tekst-sek);
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .kal-toggle-knapp.aktiv {
+      background: var(--hvit);
+      color: var(--grønn);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    /* ── Uke-visning ── */
+    .uke-dag {
+      border-bottom: 1px solid var(--kant);
+      padding: 0;
+    }
+    .uke-dag:last-child { border-bottom: none; }
+    .uke-dag-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background .12s;
+    }
+    .uke-dag-header:hover { background: var(--grønn-lys); }
+    .uke-dag-header.i-dag { background: var(--grønn-lys); }
+    .uke-dag-nr {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--tekst);
+      flex-shrink: 0;
+    }
+    .uke-dag-nr.i-dag-nr {
+      background: var(--grønn);
+      color: white;
+    }
+    .uke-dag-navn {
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      color: var(--tekst-sek);
+      text-transform: uppercase;
+      width: 28px;
+      flex-shrink: 0;
+    }
+    .uke-prikker {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+    .uke-prikk {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .uke-dag.valgt .uke-dag-header { background: var(--grønn-lys); }
+    .uke-hendelse {
+      padding: 5px 12px 5px 52px;
+      font-size: 12px;
+      color: var(--tekst);
+      border-left: 3px solid transparent;
+      margin: 2px 0;
+      border-radius: 0 6px 6px 0;
+      cursor: pointer;
+      transition: background .1s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .uke-hendelse:hover { opacity: 0.75; }
+
+    /* ── Kategori-modal ── */
+    .kat-rad {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--kant);
+    }
+    .kat-rad:last-child { border-bottom: none; }
+    .kat-farge-velger {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .kat-farge-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      flex-shrink: 0;
+    }
+    .kat-farge-dot.valgt { border-color: var(--tekst); transform: scale(1.15); }
+    .kat-navn-input {
+      flex: 1;
+      border: 1px solid var(--kant);
+      border-radius: var(--rs);
+      padding: 6px 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      color: var(--tekst);
+      background: var(--bg);
+    }
+
+    /* ── Versjon ── */
+    .versjon {
+      text-align: center;
+      padding: 32px 0 16px;
+      font-size: 11px;
+      color: var(--kant);
+      font-family: "Syne", sans-serif;
+      letter-spacing: 0.5px;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Login overlay -->
+<div id="loginOverlay" style="display:flex;position:fixed;inset:0;background:var(--bg);z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:24px;">
+  <div style="width:72px;height:72px;border-radius:18px;background:var(--grønn);display:flex;align-items:center;justify-content:center;">
+    <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:38px;color:white;line-height:1;">H</span>
+  </div>
+  <div style="text-align:center;">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--tekst);font-variant-numeric:lining-nums;font-feature-settings:'lnum' 1;">Horizon Proposal</div>
+    <div style="font-family:'Nunito',sans-serif;font-size:13px;color:var(--tekst-sek);margin-top:4px;">Logg inn for å fortsette</div>
+  </div>
+  <button onclick="window._fbSignIn()" style="background:var(--grønn);color:white;border:none;border-radius:10px;padding:13px 28px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:10px;">
+    <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+    Logg inn med Google
+  </button>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="logo-ikon" style="background:var(--grønn);width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:white;line-height:1;">H</span>
+    </div>
+    Horizon Proposal
+  </div>
+  <div class="header-handlinger">
+    <button class="header-knapp" onclick="åpneKategoriModal()" title="Rediger kategorier">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+    <input type="file" id="importInput" accept=".json" style="display:none" onchange="importerData(this)"/>
+    <input type="file" id="mergeInput"  accept=".json" style="display:none" onchange="mergeData(this)"/>
+  </div>
+</header>
+
+<nav class="faner">
+  <button class="fane aktiv" onclick="byttFane('todo', this)">To do</button>
+  <button class="fane" onclick="byttFane('oppgaver', this)">Milepæler</button>
+  <button class="fane" onclick="byttFane('liste', this)">Aktiviteter</button>
+  <button class="fane" onclick="byttFane('kalender', this)">Kalender</button>
+</nav>
+
+<div id="varselBanner" style="display:none;background:var(--grønn-lys);border-bottom:1px solid var(--grønn-mid);padding:10px 16px;display:none;align-items:center;justify-content:space-between;gap:10px;">
+  <span style="font-size:12px;color:var(--tekst);font-family:'Nunito',sans-serif;">🔔 Tillat varsler for å se forfalte milepæler på ikonet</span>
+  <div style="display:flex;gap:8px;flex-shrink:0;">
+    <button onclick="avvisVarsel()" style="background:none;border:1px solid var(--grønn-mid);border-radius:6px;padding:5px 10px;font-size:11px;font-family:'Syne',sans-serif;font-weight:700;color:var(--tekst-sek);cursor:pointer;">Ikke nå</button>
+    <button onclick="be0mVarsel()" style="background:var(--grønn);border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-family:'Syne',sans-serif;font-weight:700;color:white;cursor:pointer;">Tillat</button>
+  </div>
+</div>
+
+<main>
+
+  <!-- To do -->
+  <div id="panel-todo" class="panel aktiv">
+    <div class="todo-hurtigknapper">
+      <button class="todo-hurtig-knapp" onclick="åpneTodoModal()">+ To do</button>
+      <button class="todo-hurtig-knapp" onclick="åpneAktivitetModal()">+ Aktivitet</button>
+      <button class="todo-hurtig-knapp" onclick="åpneOppgaveModal()">+ Milepæl</button>
+    </div>
+    <div class="kat-oversikt-rad" id="katOversiktRad"></div>
+    <div class="kort-container" id="todoListe"></div>
+  </div>
+
+  <!-- Kalender -->
+  <div id="panel-kalender" class="panel">
+    <div class="kalender-nav">
+      <button class="nav-knapp" id="forrigeKnapp" onclick="forrigeManad()">&#8249;</button>
+      <div class="maaned-tittel" id="maanedTittel"></div>
+      <button class="nav-knapp" id="nesteKnapp" onclick="nesteManad()">&#8250;</button>
+    </div>
+    <div class="kal-visning-toggle">
+      <button id="toggleMaaned" class="kal-toggle-knapp aktiv" onclick="byttKalVisning('maaned')">Måned</button>
+      <button id="toggleUke"    class="kal-toggle-knapp"       onclick="byttKalVisning('uke')">Uke</button>
+    </div>
+    <div id="kalender-maaned-view">
+      <div class="kalender-grid">
+        <div class="dag-navn-rad">
+          <div class="dag-navn">Man</div>
+          <div class="dag-navn">Tir</div>
+          <div class="dag-navn">Ons</div>
+          <div class="dag-navn">Tor</div>
+          <div class="dag-navn">Fre</div>
+          <div class="dag-navn">Lør</div>
+          <div class="dag-navn">Søn</div>
+        </div>
+        <div class="dager-grid" id="dagerGrid"></div>
+      </div>
+    </div>
+    <div id="kalender-uke-view" style="display:none;">
+      <div id="ukeGrid"></div>
+    </div>
+    <div class="valgt-dag-panel" id="valgtDagPanel">
+      <div class="valgt-dag-header">
+        <div class="valgt-dag-tittel" id="valgtDagTittel"></div>
+      </div>
+      <div id="valgtDagListe"></div>
+    </div>
+    <div id="brukerInfo" style="display:none;justify-content:space-between;align-items:center;padding:10px 4px 0;">
+      <button onclick="åpneKategoriModal()" class="knapp-sek" style="font-size:11px;padding:5px 10px;">Rediger kategorier</button>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span id="brukerNavn" style="font-size:11px;font-family:'Nunito',sans-serif;color:var(--tekst-sek);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px;"></span>
+        <button class="header-knapp" onclick="window._fbSignOut()" title="Logg ut" style="font-size:14px;">⏏</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aktiviteter / liste -->
+  <div id="panel-liste" class="panel">
+    <div class="seksjon-header">
+      <div class="seksjon-tittel">Alle aktiviteter</div>
+      <button class="legg-til-knapp" onclick="åpneAktivitetModal()">+ Legg til aktivitet</button>
+    </div>
+    <div class="filter-rad" id="aktivitetFilterRad"></div>
+    <div class="kort-container" id="aktivitetListe"></div>
+  </div>
+
+  <!-- Milepæler -->
+  <div id="panel-oppgaver" class="panel">
+    <div class="seksjon-header">
+      <div class="seksjon-tittel">Milepæler</div>
+      <button class="legg-til-knapp" onclick="åpneOppgaveModal()">+ Legg til milepæl</button>
+    </div>
+    <div class="filter-rad" id="filterRad"></div>
+    <div class="kort-container" id="oppgaveListe"></div>
+  </div>
+
+  <div class="versjon">v.1.79</div>
+</main>
+
+<!-- Modal: Kategorioversikt -->
+<div class="modal-overlay" id="katOversiktModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-tittel" id="katOversiktTittel"></div>
+      <button class="lukk-knapp" onclick="lukkModal('katOversiktModal')">×</button>
+    </div>
+    <div class="modal-body" id="katOversiktBody" style="max-height:70vh;overflow-y:auto;"></div>
+    <div class="modal-footer">
+      <button class="knapp-sek" onclick="lukkModal('katOversiktModal')">Lukk</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Innstillinger -->
+<div class="modal-overlay" id="kategoriModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-tittel">Innstillinger</div>
+      <button class="lukk-knapp" onclick="lukkModal('kategoriModal')">×</button>
+    </div>
+    <div style="padding:12px 22px 4px;">
+      <div style="font-size:10px;font-weight:700;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:0.8px;color:var(--tekst-sek);">Kategorier</div>
+    </div>
+    <div class="modal-body" id="kategoriModalBody" style="padding-top:8px;"></div>
+    <div style="padding:10px 22px 16px;border-bottom:1px solid var(--kant);">
+      <button class="knapp-primær" onclick="leggTilKategori()" style="width:100%;">+ Legg til kategori</button>
+    </div>
+    <div style="padding:16px 22px 8px;">
+      <div style="font-size:10px;font-weight:700;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:0.8px;color:var(--tekst-sek);margin-bottom:10px;">Data</div>
+      <div style="display:flex;gap:8px;">
+        <button class="knapp-sek" onclick="eksporterData()" style="flex:1;font-size:12px;">↓ Eksporter</button>
+        <button class="knapp-sek" onclick="document.getElementById('importInput').click()" style="flex:1;font-size:12px;">↑ Importer</button>
+        <button class="knapp-sek" onclick="document.getElementById('mergeInput').click()" style="flex:1;font-size:12px;">⇅ Slå sammen</button>
+      </div>
+      <button id="angreImportKnapp" onclick="angreImport()" style="display:none;width:100%;margin-top:8px;font-size:12px;" class="knapp-sek">↩ Angre siste import</button>
+    </div>
+    <div class="modal-footer" style="justify-content:flex-end;">
+      <button class="knapp-sek" onclick="lukkModal('kategoriModal')">Lukk</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: To do info -->
+<div class="modal-overlay" id="todoInfoModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-tittel" id="todoInfoModalTittel"></div>
+      <button class="lukk-knapp" onclick="lukkModal('todoInfoModal')">×</button>
+    </div>
+    <div class="modal-body" id="todoInfoModalBody"></div>
+    <div class="modal-footer">
+      <button class="knapp-sek" onclick="lukkModal('todoInfoModal')">Lukk</button>
+      <div class="knapp-gruppe" style="align-items:center;">
+        <button class="knapp-sek" id="todoInfoFullfortKnapp" onclick="toggleTodoFraInfo()"></button>
+        <button class="info-ikon-knapp" id="todoInfoRedigKnapp" title="Rediger">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="info-ikon-knapp slett" id="todoInfoSlettKnapp" title="Slett">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: To do -->
+<div class="modal-overlay" id="todoModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-tittel" id="todoModalTittel">Ny to do</div>
+      <button class="lukk-knapp" onclick="lukkModal('todoModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="felt">
+        <label>Tittel</label>
+        <input type="text" id="todoFeltTittel" />
+      </div>
+      <div class="felt">
+        <label>Frist</label>
+        <div style="display:flex;gap:6px;margin-bottom:8px;">
+          <button type="button" class="knapp-sek" style="flex:1;font-size:11px;padding:6px 4px;" onclick="settTodoFrist(0)">I dag</button>
+          <button type="button" class="knapp-sek" style="flex:1;font-size:11px;padding:6px 4px;" onclick="settTodoFrist(1)">I morgen</button>
+          <button type="button" class="knapp-sek" style="flex:1;font-size:11px;padding:6px 4px;" onclick="settTodoFrist(3)">Om 3 dager</button>
+        </div>
+        <input type="date" id="todoFeltFrist" />
+      </div>
+      <div class="felt">
+        <label>Beskrivelse</label>
+        <textarea id="todoFeltBesk" style="min-height:64px;"></textarea>
+      </div>
+      <div class="felt">
+        <label>Koble til milepæl</label>
+        <select id="todoFeltOppgave">
+          <option value="">— Ingen —</option>
+        </select>
+      </div>
+      <div class="felt">
+        <label>Kategori</label>
+        <select id="todoFeltKategori">
+          <option value="">— Ingen —</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="knapp-fare" id="slettTodoKnapp" onclick="slettTodo()" style="display:none;">Slett</button>
+      <div class="knapp-gruppe">
+        <button class="knapp-sek" onclick="lukkModal('todoModal')">Avbryt</button>
+        <button class="knapp-primær" onclick="lagreTodo()">Lagre</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Oppgave info -->
+<div class="modal-overlay" id="oppgaveInfoModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-tittel" id="oppInfoModalTittel"></div>
+      <button class="lukk-knapp" onclick="lukkModal('oppgaveInfoModal')">×</button>
+    </div>
+    <div class="modal-body" id="oppInfoModalBody"></div>
+    <div class="modal-footer">
+      <button class="knapp-sek" onclick="lukkModal('oppgaveInfoModal')">Lukk</button>
+      <div class="knapp-gruppe" style="align-items:center;">
+        <button class="knapp-sek" id="oppInfoFullfortKnapp" onclick="toggleOppgaveFraInfo()"></button>
+        <button class="knapp-sek" id="oppInfoLeggTilTodoKnapp">+ To do</button>
+        <button class="info-ikon-knapp" id="oppInfoRedigKnapp" title="Rediger">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="info-ikon-knapp slett" id="oppInfoSlettKnapp" title="Slett">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Aktivitet info -->
+<div class="modal-overlay" id="aktivitetInfoModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-tittel" id="infoModalTittel"></div>
+      <button class="lukk-knapp" onclick="lukkModal('aktivitetInfoModal')">×</button>
+    </div>
+    <div class="modal-body" id="infoModalBody"></div>
+    <div class="modal-footer">
+      <button class="knapp-sek" onclick="lukkModal('aktivitetInfoModal')">Lukk</button>
+      <div class="knapp-gruppe" style="align-items:center;">
+        <button class="knapp-sek" id="infoModalLeggTilOppgaveKnapp">+ Milepæl</button>
+        <button class="info-ikon-knapp" id="infoModalRedigKnapp" title="Rediger">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="info-ikon-knapp slett" id="infoModalSlettKnapp" title="Slett">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Aktivitet -->
+<div class="modal-overlay" id="aktivitetModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-tittel" id="aktivitetModalTittel">Ny aktivitet</div>
+      <button class="lukk-knapp" onclick="lukkModal('aktivitetModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="felt">
+        <label>Tittel</label>
+        <input type="text" id="feltTittel" />
+      </div>
+      <div class="felt">
+        <label>Kategori</label>
+        <select id="feltType"></select>
+      </div>
+      <div class="felt-rad">
+        <div class="felt">
+          <label>Fra dato</label>
+          <input type="date" id="feltDato" oninput="synkDatoTil(this.value)" />
+        </div>
+        <div class="felt">
+          <label>Til dato</label>
+          <input type="date" id="feltDatoTil" />
+        </div>
+      </div>
+      <div class="felt-rad">
+        <div class="felt">
+          <label>Fra kl.</label>
+          <input type="time" id="feltTid" />
+        </div>
+        <div class="felt">
+          <label>Til kl.</label>
+          <input type="time" id="feltTidTil" />
+        </div>
+      </div>
+      <div class="felt">
+        <label>Beskrivelse</label>
+        <textarea id="feltBesk"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="knapp-slett" id="slettAktivitetKnapp" onclick="slettAktivitet()" style="display:none">Slett</button>
+      <div class="knapp-gruppe">
+        <button class="knapp-sek" onclick="lukkModal('aktivitetModal')">Avbryt</button>
+        <button class="knapp-primær" onclick="lagreAktivitet()">Lagre</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Milepæl -->
+<div class="modal-overlay" id="oppgaveModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-tittel" id="oppgaveModalTittel">Ny milepæl</div>
+      <button class="lukk-knapp" onclick="lukkModal('oppgaveModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="felt">
+        <label>Tittel</label>
+        <input type="text" id="oppFeltBesk" />
+      </div>
+      <div class="felt">
+        <label>Koble til aktivitet</label>
+        <select id="oppFeltAktivitet">
+          <option value="">— Frittstående —</option>
+        </select>
+      </div>
+      <div class="felt">
+        <label>Kategori</label>
+        <select id="oppFeltKategori">
+          <option value="">— Ingen —</option>
+        </select>
+      </div>
+      <div class="felt">
+        <label>Frist</label>
+        <div class="frist-valg" id="fristValg">
+          <div class="frist-rad" data-valg="1dag" onclick="velgFrist(this)">
+            <div class="frist-sirkel"></div>
+            <div class="frist-tekst-rad">1 dag før</div>
+          </div>
+          <div class="frist-rad" data-valg="3dag" onclick="velgFrist(this)">
+            <div class="frist-sirkel"></div>
+            <div class="frist-tekst-rad">3 dager før</div>
+          </div>
+          <div class="frist-rad" data-valg="1uke" onclick="velgFrist(this)">
+            <div class="frist-sirkel"></div>
+            <div class="frist-tekst-rad">1 uke før</div>
+          </div>
+          <div class="frist-rad" data-valg="1mnd" onclick="velgFrist(this)">
+            <div class="frist-sirkel"></div>
+            <div class="frist-tekst-rad">1 måned før</div>
+          </div>
+          <div class="frist-rad" data-valg="egendefinert" onclick="velgFrist(this)">
+            <div class="frist-sirkel"></div>
+            <div class="frist-tekst-rad">Egendefinert dato</div>
+          </div>
+          <div class="frist-rad" data-valg="ingen" onclick="velgFrist(this)">
+            <div class="frist-sirkel"></div>
+            <div class="frist-tekst-rad">Ingen frist</div>
+          </div>
+        </div>
+        <div class="frist-eg-felt" id="fristEgFelt">
+          <label>Velg dato</label>
+          <input type="date" id="oppFeltFrist" />
+        </div>
+        <div id="fristRelativInfo" style="font-size:12px;color:var(--tekst-sek);margin-top:6px;display:none;"></div>
+      </div>
+      <div class="felt">
+        <label>Notater</label>
+        <textarea id="oppFeltNotat" style="min-height:64px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="knapp-slett" id="slettOppgaveKnapp" onclick="slettOppgave()" style="display:none">Slett</button>
+      <div class="knapp-gruppe">
+        <button class="knapp-sek" onclick="lukkModal('oppgaveModal')">Avbryt</button>
+        <button class="knapp-primær" onclick="lagreOppgave()">Lagre</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  /* ──────────────────────────────
+     DATA
+  ────────────────────────────── */
+  let aktiviteter = [];
+  let oppgaver    = [];
+  let todos       = [];
+
+  // ── Dynamiske kategorier ──
+  const STANDARD_KATEGORIER = [];
+  let kategorier = [];
+
+  function getKat(id) {
+    return kategorier.find(k => k.id === id) || null;
+  }
+  function katIds() { return kategorier.map(k => k.id); }
+
+  function genererKategoriCSS() {
+    let css = '';
+    kategorier.forEach(k => {
+      const id = k.id, f = k.farge;
+      // Lys hover-bakgrunn (bland hvit 85%)
+      const hex2rgb = h => [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+      const [r,g,b] = hex2rgb(f);
+      const lysHex = `rgba(${r},${g},${b},0.1)`;
+      css += `
+      .type-badge.${id}          { border-color:${f}; color:${f}; }
+      .aktivitet-kort.hover-${id}:hover { background:${lysHex}; }
+      .filter-pill.farge-${id}   { border-color:${f}; color:${f}; }
+      .filter-pill.aktiv-${id}   { background:${f}; color:white; border-color:${f}; }
+      .oppgave-kort.stripe-${id} { border-left-color:${f}; }
+      .oppgave-kort.stripe-${id}:hover { background:${lysHex}; }
+      .oppgave-badge.badge-${id} { border-color:${f}; color:${f}; }
+      .tilknyttet-chip.chip-${id}{ border-color:${f}; color:${f}; }
+      `;
+    });
+    let el = document.getElementById('katCSS');
+    if (!el) { el = document.createElement('style'); el.id = 'katCSS'; document.head.appendChild(el); }
+    el.textContent = css;
+  }
+
+  function lastFilterState(nøkkel) {
+    try {
+      const saved = JSON.parse(localStorage.getItem(nøkkel) || 'null');
+      const base = Object.fromEntries(katIds().map(k => [k, 1]));
+      return saved ? { ...base, ...saved } : base;
+    } catch { return Object.fromEntries(katIds().map(k => [k, 1])); }
+  }
+  function lagreFilterState(nøkkel, state) {
+    localStorage.setItem(nøkkel, JSON.stringify(state));
+  }
+  let aktivitetFilterState = {};
+  let oppgaveFilterState   = {};
+
+  let redigAktivitetId = null;
+  let redigOppgaveId   = null;
+  let valgtDato        = null;
+  let aktivFilter      = null;
+  let visAar           = new Date().getFullYear();
+  let visMaaned        = new Date().getMonth();
+
+  const MAANEDER = [
+    'januar','februar','mars','april','mai','juni',
+    'juli','august','september','oktober','november','desember'
+  ];
+
+  const UKEDAGER = ['søndag','mandag','tirsdag','onsdag','torsdag','fredag','lørdag'];
+  const UKEDAGER_K = ['søn','man','tir','ons','tor','fre','lør'];
+
+  /* ──────────────────────────────
+     LAGRING
+  ────────────────────────────── */
+  function lagre() {
+    localStorage.setItem('lp_a', JSON.stringify(aktiviteter));
+    localStorage.setItem('lp_o', JSON.stringify(oppgaver));
+    localStorage.setItem('lp_t', JSON.stringify(todos));
+    localStorage.setItem('lp_k', JSON.stringify(kategorier));
+    oppdaterForfaltBadge();
+    if (window._currentUid && window._lagreTilSky) {
+      window._lagreTilSky(window._currentUid);
+    }
+  }
+
+  function hent() {
+    const a = localStorage.getItem('lp_a');
+    const o = localStorage.getItem('lp_o');
+    const t = localStorage.getItem('lp_t');
+    const k = localStorage.getItem('lp_k');
+    aktiviteter = a ? JSON.parse(a) : [];
+    oppgaver    = o ? JSON.parse(o) : [];
+    todos       = t ? JSON.parse(t) : [];
+    kategorier  = k ? JSON.parse(k) : [...STANDARD_KATEGORIER];
+    genererKategoriCSS();
+    aktivitetFilterState = lastFilterState('lp_fa');
+    oppgaveFilterState   = lastFilterState('lp_fo');
+  }
+
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2);
+  }
+
+  function oppdaterForfaltBadge() {
+    const iDag = new Date(); iDag.setHours(0,0,0,0);
+    const antall = oppgaver.filter(o => !o.fullfort && o.frist && new Date(o.frist + 'T00:00:00') < iDag).length;
+
+    // iOS / PWA app-badge (krever iOS 16.4+ og at appen er lagt til på hjemskjermen)
+    if ('setAppBadge' in navigator) {
+      if (antall > 0) {
+        navigator.setAppBadge(antall).catch(() => {});
+      } else {
+        navigator.clearAppBadge().catch(() => {});
+      }
+    }
+
+    // Badge i fane-knappen fjernet – kun app-badge brukes
+  }
+
+  /* ──────────────────────────────
+     FANER
+  ────────────────────────────── */
+  function byttFane(id, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('aktiv'));
+    document.querySelectorAll('.fane').forEach(f => f.classList.remove('aktiv'));
+    document.getElementById('panel-' + id).classList.add('aktiv');
+    el.classList.add('aktiv');
+    if (id === 'kalender') renderKalender();
+    if (id === 'liste')    renderListe();
+    if (id === 'oppgaver') renderOppgaver();
+  }
+
+  let kalVisning = 'maaned'; // 'maaned' | 'uke'
+  let ukeOffset  = 0; // uker relativt til i dag
+
+  function byttKalVisning(visning) {
+    kalVisning = visning;
+    document.getElementById('kalender-maaned-view').style.display = visning === 'maaned' ? '' : 'none';
+    document.getElementById('kalender-uke-view').style.display    = visning === 'uke'    ? '' : 'none';
+    document.getElementById('toggleMaaned').classList.toggle('aktiv', visning === 'maaned');
+    document.getElementById('toggleUke').classList.toggle('aktiv',    visning === 'uke');
+    if (visning === 'maaned') renderKalender();
+    else renderUke();
+  }
+
+  function renderUke() {
+    const grid = document.getElementById('ukeGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    // Finn mandagen i gjeldende uke
+    const iDag = new Date(); iDag.setHours(0,0,0,0);
+    const mandag = new Date(iDag);
+    const dagIUke = iDag.getDay() === 0 ? 6 : iDag.getDay() - 1;
+    mandag.setDate(mandag.getDate() - dagIUke + ukeOffset * 7);
+
+    const uke = new Date(mandag);
+    const ukeNr = getUkeNr(mandag);
+    document.getElementById('maanedTittel').textContent = 'Uke ' + ukeNr + ' · ' + mandag.getFullYear();
+    document.getElementById('forrigeKnapp').onclick = () => { ukeOffset--; renderUke(); };
+    document.getElementById('nesteKnapp').onclick   = () => { ukeOffset++; renderUke(); };
+
+    for (let i = 0; i < 7; i++) {
+      const d  = new Date(uke);
+      d.setDate(uke.getDate() + i);
+      const ds = d.toISOString().slice(0,10);
+      const erIDag = ds === iDag.toISOString().slice(0,10);
+      const erValgt = ds === valgtDato;
+
+      const dagAkt = aktiviteter.filter(a => a.dato <= ds && (a.datoTil >= ds || a.dato === ds));
+      const dagOpp = oppgaver.filter(o => o.frist === ds && !o.fullfort);
+
+      const dagEl = document.createElement('div');
+      dagEl.className = 'uke-dag' + (erValgt ? ' valgt' : '');
+
+      const header = document.createElement('div');
+      header.className = 'uke-dag-header' + (erIDag ? ' i-dag' : '');
+      header.onclick = () => velgDag(ds, dagEl);
+
+      const navnEl = document.createElement('div');
+      navnEl.className = 'uke-dag-navn';
+      navnEl.textContent = UKEDAGER_K[d.getDay()];
+
+      const nrEl = document.createElement('div');
+      nrEl.className = 'uke-dag-nr' + (erIDag ? ' i-dag-nr' : '');
+      nrEl.textContent = d.getDate();
+
+      const prikker = document.createElement('div');
+      prikker.className = 'uke-prikker';
+      dagAkt.forEach(a => {
+        const p = document.createElement('div');
+        p.className = 'uke-prikk';
+        p.style.background = getKat(a.type)?.farge || '#999';
+        prikker.appendChild(p);
+      });
+      dagOpp.forEach(() => {
+        const p = document.createElement('div');
+        p.className = 'uke-prikk';
+        p.style.background = 'var(--tekst-sek)';
+        prikker.appendChild(p);
+      });
+
+      header.appendChild(navnEl);
+      header.appendChild(nrEl);
+      header.appendChild(prikker);
+      dagEl.appendChild(header);
+
+      // Vis aktiviteter
+      dagAkt.forEach(a => {
+        const el = document.createElement('div');
+        el.className = 'uke-hendelse';
+        el.style.borderLeftColor = getKat(a.type)?.farge || '#ccc';
+        el.style.background = (getKat(a.type)?.farge || '#ccc') + '18';
+        const tid = a.tid ? ' · ' + a.tid : '';
+        el.textContent = a.tittel + tid;
+        el.onclick = e => { e.stopPropagation(); åpneAktivitetInfo(a.id); };
+        dagEl.appendChild(el);
+      });
+
+      // Vis oppgaver med frist på denne dagen
+      dagOpp.forEach(o => {
+        const el = document.createElement('div');
+        el.className = 'uke-hendelse';
+        el.style.borderLeftColor = 'var(--tekst-sek)';
+        el.style.background = 'var(--grønn-lys)';
+        el.style.color = 'var(--tekst-sek)';
+        el.textContent = '◻ ' + o.beskrivelse;
+        el.onclick = e => { e.stopPropagation(); åpneOppgaveInfo(o.id); };
+        dagEl.appendChild(el);
+      });
+
+      grid.appendChild(dagEl);
+    }
+  }
+
+  function getUkeNr(dato) {
+    const d = new Date(Date.UTC(dato.getFullYear(), dato.getMonth(), dato.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const aarStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - aarStart) / 86400000) + 1) / 7);
+  }
+
+  /* ──────────────────────────────
+     MÅNEDSKORT
+  ────────────────────────────── */
+  function renderKalender() {
+    document.getElementById('maanedTittel').textContent =
+      MAANEDER[visMaaned] + ' ' + visAar;
+    document.getElementById('forrigeKnapp').onclick = () => forrigeManad();
+    document.getElementById('nesteKnapp').onclick   = () => nesteManad();
+
+    const grid = document.getElementById('dagerGrid');
+    grid.innerHTML = '';
+
+    const iDag = new Date();
+    const forsteDag   = new Date(visAar, visMaaned, 1);
+    let startUkedag   = forsteDag.getDay();
+    startUkedag = startUkedag === 0 ? 6 : startUkedag - 1;
+
+    const dagerIMnd = new Date(visAar, visMaaned + 1, 0).getDate();
+    const dagerForr = new Date(visAar, visMaaned, 0).getDate();
+
+    // Forrige måned
+    for (let i = startUkedag - 1; i >= 0; i--) {
+      const d = dagerForr - i;
+      const mnd = visMaaned - 1 < 0 ? 11 : visMaaned - 1;
+      const aar = visMaaned - 1 < 0 ? visAar - 1 : visAar;
+      grid.appendChild(lagCelle(d, aar, mnd, true));
+    }
+
+    // Denne måneden
+    for (let d = 1; d <= dagerIMnd; d++) {
+      const erIDag =
+        d === iDag.getDate() &&
+        visMaaned === iDag.getMonth() &&
+        visAar    === iDag.getFullYear();
+      grid.appendChild(lagCelle(d, visAar, visMaaned, false, erIDag));
+    }
+
+    // Neste måned
+    const totalt = startUkedag + dagerIMnd;
+    const rest   = totalt % 7 === 0 ? 0 : 7 - (totalt % 7);
+    for (let d = 1; d <= rest; d++) {
+      const mnd = visMaaned + 1 > 11 ? 0  : visMaaned + 1;
+      const aar = visMaaned + 1 > 11 ? visAar + 1 : visAar;
+      grid.appendChild(lagCelle(d, aar, mnd, true));
+    }
+
+    if (valgtDato) renderValgtDag(valgtDato);
+  }
+
+  function lagCelle(dag, aar, mnd, annen, erIDag) {
+    const ds = `${aar}-${String(mnd+1).padStart(2,'0')}-${String(dag).padStart(2,'0')}`;
+    const dagAkt = aktiviteter.filter(a => a.dato === ds);
+    const dagOpp = oppgaver.filter(o => o.frist === ds);
+
+    const celle = document.createElement('div');
+    celle.className = 'dag-celle'
+      + (annen  ? ' annen-maaned' : '')
+      + (erIDag ? ' i-dag'        : '')
+      + (ds === valgtDato ? ' valgt' : '');
+
+    if (!annen) celle.onclick = (e) => velgDag(ds, e.currentTarget);
+
+    const nr = document.createElement('div');
+    nr.className = 'dag-nr';
+    nr.textContent = dag;
+    celle.appendChild(nr);
+
+    if (dagAkt.length > 0 || dagOpp.length > 0) {
+      const rad = document.createElement('div');
+      rad.className = 'prikke-rad';
+      dagAkt.slice(0, 5).forEach(a => {
+        const p = document.createElement('div');
+        p.className = 'prikk';
+        p.style.background = getKat(a.type)?.farge || '#999';
+        rad.appendChild(p);
+      });
+      if (dagOpp.length > 0) {
+        const p = document.createElement('div');
+        p.className = 'prikk';
+        p.style.background = 'var(--grønn)';
+        p.title = dagOpp.length + ' milepæl(er) med frist';
+        rad.appendChild(p);
+      }
+      celle.appendChild(rad);
+    }
+    return celle;
+  }
+
+  function velgDag(ds, el) {
+    valgtDato = ds;
+    document.querySelectorAll('.dag-celle.valgt').forEach(c => c.classList.remove('valgt'));
+    if (el) el.classList.add('valgt');
+    renderValgtDag(ds);
+  }
+
+  function synkDatoTil(nyDato) {
+    const til = document.getElementById('feltDatoTil');
+    if (!til.value || til.value < nyDato) til.value = nyDato;
+  }
+
+  function renderValgtDag(ds) {
+    const panel    = document.getElementById('valgtDagPanel');
+    const tittelEl = document.getElementById('valgtDagTittel');
+    const listEl   = document.getElementById('valgtDagListe');
+
+    const d = new Date(ds + 'T00:00:00');
+    const navn = UKEDAGER[d.getDay()];
+    tittelEl.textContent =
+      navn.charAt(0).toUpperCase() + navn.slice(1) +
+      ' ' + d.getDate() + '. ' + MAANEDER[d.getMonth()];
+
+    const dagAkt = aktiviteter
+      .filter(a => a.dato === ds)
+      .sort((a, b) => (a.tid || '').localeCompare(b.tid || ''));
+
+    // Oppgaver med frist denne dagen, ELLER koblet til en aktivitet denne dagen
+    const aktIdsIDag = new Set(dagAkt.map(a => a.id));
+    const dagOpp = oppgaver
+      .filter(o => !o.fullfort && (
+        o.frist === ds ||
+        (o.aktivitetId && aktIdsIDag.has(o.aktivitetId))
+      ))
+      .sort((a, b) => (a.beskrivelse || '').localeCompare(b.beskrivelse || ''));
+
+    listEl.innerHTML = '';
+
+    // Alltid vis begge seksjoner med sine + Legg til-knapper
+    listEl.appendChild(lagDagSeksjon('Aktiviteter', () => åpneAktivitetModal(null, ds)));
+    if (dagAkt.length === 0) {
+      const tom = document.createElement('div');
+      tom.className = 'tom-melding';
+      tom.style.cssText = 'padding:14px 20px;font-size:13px;';
+      tom.textContent = 'Ingen aktiviteter.';
+      listEl.appendChild(tom);
+    } else {
+      dagAkt.forEach(a => listEl.appendChild(lagAktivitetKort(a, true)));
+    }
+
+    listEl.appendChild(lagDagSeksjon('Milepæler', () => åpneOppgaveModal()));
+    if (dagOpp.length === 0) {
+      const tom = document.createElement('div');
+      tom.className = 'tom-melding';
+      tom.style.cssText = 'padding:14px 20px;font-size:13px;';
+      tom.textContent = 'Ingen milepæler.';
+      listEl.appendChild(tom);
+    } else {
+      dagOpp.forEach(o => {
+        const akt = aktiviteter.find(a => a.id === o.aktivitetId);
+        const vType = akt?.type || o.kategoriId;
+        const stripeKlasse = vType ? 'stripe-' + vType : 'stripe-fri';
+
+        const ytre = document.createElement('div');
+        ytre.style.cssText = 'position:relative;overflow:hidden;border-radius:var(--r);margin-bottom:1px;';
+
+        const slettBg = document.createElement('div');
+        slettBg.className = 'sveip-bakgrunn';
+        slettBg.innerHTML = `<div class="slett-sirkel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>`;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'sveip-innhold';
+
+        const kort = document.createElement('div');
+        kort.className = 'oppgave-kort ' + stripeKlasse;
+        kort.style.cursor = 'pointer';
+        kort.onclick = () => åpneOppgaveInfo(o.id);
+
+        const cb = document.createElement('div');
+        cb.className = 'checkbox' + (o.fullfort ? ' sjekket' : '');
+        cb.textContent = o.fullfort ? '✓' : '';
+        cb.onclick = e => { e.stopPropagation(); toggleOppgave(o.id); renderValgtDag(ds); };
+
+        const info = document.createElement('div');
+        info.className = 'oppgave-info';
+
+        let metaHtml = '';
+        if (o.frist) metaHtml += fristSpan(o.frist, o.fullfort);
+        if (akt) {
+          metaHtml += `<span class="tilknyttet-chip chip-${akt.type || "fri"}">${akt.tittel}</span>`;
+        } else if (o.kategoriId) {
+          const katV = getKat(o.kategoriId);
+          if (katV) metaHtml += `<span class="tilknyttet-chip chip-${katV.id}">${katV.label}</span>`;
+        }
+
+        info.innerHTML = `<div class="oppgave-besk">${o.beskrivelse}</div>
+          ${metaHtml ? '<div class="oppgave-meta">' + metaHtml + '</div>' : ''}`;
+
+        kort.appendChild(cb);
+        kort.appendChild(info);
+        wrapper.appendChild(kort);
+        ytre.appendChild(slettBg);
+        ytre.appendChild(wrapper);
+        leggTilSveipSlett(ytre, wrapper, slettBg, () => {
+          oppgaver = oppgaver.filter(x => x.id !== o.id);
+          lagre();
+          renderValgtDag(ds);
+        });
+        listEl.appendChild(ytre);
+      });
+    }
+    panel.classList.add('vis');
+  }
+
+  function lagDagSeksjon(label, onLeggTil) {
+    const div = document.createElement('div');
+    div.className = 'dag-seksjon-header';
+    const lbl = document.createElement('span');
+    lbl.className = 'dag-seksjon-label';
+    lbl.textContent = label;
+    const knapp = document.createElement('button');
+    knapp.className = 'dag-seksjon-legg-til';
+    knapp.textContent = '+ Legg til';
+    knapp.onclick = e => { e.stopPropagation(); onLeggTil(); };
+    div.appendChild(lbl);
+    div.appendChild(knapp);
+    return div;
+  }
+
+  function forrigeManad() {
+    if (visMaaned === 0) { visMaaned = 11; visAar--; }
+    else visMaaned--;
+    nullstillValgtDag();
+    renderKalender();
+  }
+
+  function nesteManad() {
+    if (visMaaned === 11) { visMaaned = 0; visAar++; }
+    else visMaaned++;
+    nullstillValgtDag();
+    renderKalender();
+  }
+
+  function nullstillValgtDag() {
+    valgtDato = null;
+    document.getElementById('valgtDagPanel').classList.remove('vis');
+  }
+
+  /* ──────────────────────────────
+     LISTE
+  ────────────────────────────── */
+  function renderListe() {
+    const container = document.getElementById('aktivitetListe');
+    const filterRad = document.getElementById('aktivitetFilterRad');
+
+    // Bygg filterknapper
+    filterRad.innerHTML = '';
+    kategorier.forEach(k => {
+      const pill = document.createElement('button');
+      const state = aktivitetFilterState[k.id] || 1;
+      let cls = 'filter-pill ';
+      if (state === 2) cls += 'aktiv-' + k.id;
+      else if (state === 3) cls += 'farge-' + k.id + ' ekskluder';
+      else cls += 'farge-' + k.id;
+      pill.className = cls;
+      pill.textContent = k.label;
+      pill.title = state === 1 ? 'Trykk for å vise kun denne' : state === 2 ? 'Trykk for å skjule denne' : 'Trykk for å vise alle';
+      pill.onclick = () => {
+        aktivitetFilterState[k.id] = (aktivitetFilterState[k.id] || 1) % 3 + 1;
+        lagreFilterState('lp_fa', aktivitetFilterState);
+        renderListe();
+      };
+      filterRad.appendChild(pill);
+    });
+
+    let filtrert = [...aktiviteter];
+    const harKun = katIds().some(k => aktivitetFilterState[k] === 2);
+    if (harKun) {
+      filtrert = filtrert.filter(a => aktivitetFilterState[a.type] === 2);
+    } else {
+      filtrert = filtrert.filter(a => aktivitetFilterState[a.type] !== 3);
+    }
+
+    if (filtrert.length === 0) {
+      container.innerHTML =
+        '<div class="tom-melding">Ingen aktiviteter ennå.<br>Trykk «+ Legg til aktivitet» for å starte.</div>';
+      return;
+    }
+
+    const sortert = filtrert.sort((a, b) =>
+      (a.dato + (a.tid || '')).localeCompare(b.dato + (b.tid || ''))
+    );
+    const grupper = {};
+    sortert.forEach(a => {
+      const d   = new Date(a.dato + 'T00:00:00');
+      const key = `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}`;
+      if (!grupper[key]) {
+        grupper[key] = {
+          label: MAANEDER[d.getMonth()] + ' ' + d.getFullYear(),
+          items: []
+        };
+      }
+      grupper[key].items.push(a);
+    });
+    container.innerHTML = '';
+    Object.values(grupper).forEach(g => {
+      const ml = document.createElement('div');
+      ml.className = 'maaned-label';
+      ml.textContent = g.label;
+      container.appendChild(ml);
+      g.items.forEach(a => container.appendChild(lagAktivitetKort(a)));
+    });
+  }
+
+  /* ──────────────────────────────
+     UTILS
+  ────────────────────────────── */
+  /* ──────────────────────────────
+     KATEGORIOVERSIKT
+  ────────────────────────────── */
+  function renderKatOversiktKnapper() {
+    const rad = document.getElementById('katOversiktRad');
+    if (!rad) return;
+    rad.innerHTML = '';
+    kategorier.forEach(k => {
+      const btn = document.createElement('button');
+      btn.className = 'kat-oversikt-knapp';
+      btn.style.borderColor = k.farge;
+      btn.style.color = k.farge;
+      btn.textContent = k.label;
+      btn.onclick = () => åpneKatOversikt(k.id);
+      rad.appendChild(btn);
+    });
+  }
+
+  function åpneKatOversikt(katId) {
+    const kat = getKat(katId);
+    if (!kat) return;
+
+    document.getElementById('katOversiktTittel').textContent = kat.label;
+    document.getElementById('katOversiktTittel').style.color = kat.farge;
+
+    const body = document.getElementById('katOversiktBody');
+    body.innerHTML = '';
+
+    const iDag = new Date(); iDag.setHours(0,0,0,0);
+    const iDagStr = iDag.toISOString().slice(0,10);
+
+    const katAkt = aktiviteter.filter(a => a.type === katId)
+      .sort((a,b) => a.dato.localeCompare(b.dato));
+    const kommendeAkt = katAkt.filter(a => (a.datoTil || a.dato) >= iDagStr);
+    const tidligereAkt = katAkt.filter(a => (a.datoTil || a.dato) < iDagStr);
+    const katOpp = oppgaver.filter(o => {
+      const a = aktiviteter.find(a => a.id === o.aktivitetId);
+      return a?.type === katId || (!o.aktivitetId && o.kategoriId === katId);
+    });
+
+    // Helper: render en aktivitet med oppgaver og todos
+    function renderAktMedOppgaver(a, seksjon) {
+        const d = new Date(a.dato + 'T00:00:00');
+        let datoStr = d.getDate() + '. ' + MAANEDER[d.getMonth()];
+        if (a.datoTil && a.datoTil !== a.dato) {
+          const dTil = new Date(a.datoTil + 'T00:00:00');
+          datoStr += ' – ' + dTil.getDate() + '. ' + MAANEDER[dTil.getMonth()];
+        }
+        const tidStr = a.tid ? ' · ' + a.tid + (a.tidTil ? '–' + a.tidTil : '') : '';
+
+        const aktEl = document.createElement('div');
+        aktEl.className = 'kat-oversikt-akt';
+        aktEl.onclick = () => { lukkModal('katOversiktModal'); åpneAktivitetInfo(a.id); };
+        aktEl.innerHTML = `<div class="kat-oversikt-akt-tittel">${a.tittel}</div>
+          <div class="kat-oversikt-akt-dato">${datoStr}${tidStr}</div>`;
+        seksjon.appendChild(aktEl);
+
+        const aktOpp = oppgaver.filter(o => o.aktivitetId === a.id && !o.fullfort);
+        aktOpp.forEach(o => {
+          const oppEl = document.createElement('div');
+          oppEl.className = 'kat-oversikt-oppgave';
+          oppEl.onclick = () => { lukkModal('katOversiktModal'); åpneOppgaveInfo(o.id); };
+          const fristStr = o.frist ? fristLabel(o.frist, false).tekst : '';
+          oppEl.innerHTML = `<span style="color:var(--tekst-sek);">↳</span>
+            <span style="flex:1;">${o.beskrivelse}</span>
+            ${fristStr ? `<span style="font-size:11px;color:var(--tekst-sek);">${fristStr}</span>` : ''}`;
+          const oppTodos = todos.filter(t => t.oppgaveId === o.id);
+          if (oppTodos.length > 0) {
+            const fullf = oppTodos.filter(t => t.fullfort).length;
+            const badge = document.createElement('span');
+            badge.style.cssText = 'font-size:10px;color:var(--tekst-sek);white-space:nowrap;';
+            badge.textContent = `${fullf}/${oppTodos.length}`;
+            oppEl.appendChild(badge);
+          }
+          seksjon.appendChild(oppEl);
+
+          const oppTodoAktive = todos.filter(t => t.oppgaveId === o.id && !t.fullfort);
+          oppTodoAktive.forEach(t => {
+            const todoEl = document.createElement('div');
+            todoEl.className = 'kat-oversikt-oppgave';
+            todoEl.style.paddingLeft = '44px';
+            todoEl.style.fontSize = '11px';
+            todoEl.onclick = () => { lukkModal('katOversiktModal'); åpneTodoInfo(t.id); };
+            todoEl.innerHTML = `<span style="color:var(--grønn-mid);">◻</span> ${t.tittel}`;
+            seksjon.appendChild(todoEl);
+          });
+        });
+    }
+
+    // ── Kommende aktiviteter ──
+    if (kommendeAkt.length > 0) {
+      const seksjon = document.createElement('div');
+      seksjon.className = 'kat-oversikt-seksjon';
+      const tittel = document.createElement('div');
+      tittel.className = 'kat-oversikt-seksjon-tittel';
+      tittel.textContent = `Kommende aktiviteter (${kommendeAkt.length})`;
+      seksjon.appendChild(tittel);
+      kommendeAkt.forEach(a => renderAktMedOppgaver(a, seksjon));
+      body.appendChild(seksjon);
+    }
+
+    // ── Frittstående oppgaver ──
+    const frittstOpp = katOpp.filter(o => !o.fullfort && !katAkt.find(a => a.id === o.aktivitetId));
+    if (frittstOpp.length > 0) {
+      const seksjon = document.createElement('div');
+      seksjon.className = 'kat-oversikt-seksjon';
+      const tittel = document.createElement('div');
+      tittel.className = 'kat-oversikt-seksjon-tittel';
+      tittel.textContent = 'Øvrige milepæler';
+      seksjon.appendChild(tittel);
+      frittstOpp.forEach(o => {
+        const oppEl = document.createElement('div');
+        oppEl.className = 'kat-oversikt-oppgave';
+        oppEl.style.paddingLeft = '12px';
+        oppEl.onclick = () => { lukkModal('katOversiktModal'); åpneOppgaveInfo(o.id); };
+        const fristStr = o.frist ? fristLabel(o.frist, false).tekst : '';
+        oppEl.innerHTML = `<span style="flex:1;">${o.beskrivelse}</span>
+          ${fristStr ? `<span style="font-size:11px;color:var(--tekst-sek);">${fristStr}</span>` : ''}`;
+        seksjon.appendChild(oppEl);
+      });
+      body.appendChild(seksjon);
+    }
+
+    // ── Tidligere aktiviteter ──
+    if (tidligereAkt.length > 0) {
+      const seksjon = document.createElement('div');
+      seksjon.className = 'kat-oversikt-seksjon';
+      seksjon.style.opacity = '0.6';
+      const tittel = document.createElement('div');
+      tittel.className = 'kat-oversikt-seksjon-tittel';
+      tittel.textContent = `Tidligere aktiviteter (${tidligereAkt.length})`;
+      seksjon.appendChild(tittel);
+      tidligereAkt.forEach(a => renderAktMedOppgaver(a, seksjon));
+      body.appendChild(seksjon);
+    }
+
+    // ── Tom kategori ──
+    if (katAkt.length === 0 && katOpp.length === 0) {
+      body.innerHTML = '<div style="padding:16px;text-align:center;font-size:13px;color:var(--tekst-sek);">Ingen elementer i denne kategorien.</div>';
+    }
+
+    document.getElementById('katOversiktModal').classList.add('vis');
+  }
+
+  /* ──────────────────────────────
+     TO DO
+  ────────────────────────────── */
+  let redigTodoId = null;
+
+  function renderTodos() {
+    renderKatOversiktKnapper();
+    const container = document.getElementById('todoListe');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const iDag  = new Date(); iDag.setHours(0,0,0,0);
+    const om30  = new Date(iDag); om30.setDate(om30.getDate() + 30);
+
+    // Todos uten frist (aktive)
+    const utenFrist = todos.filter(t => !t.fullfort && !t.frist);
+
+    // Todos med frist (aktive), sortert
+    const medFrist = todos.filter(t => !t.fullfort && t.frist)
+      .sort((a,b) => a.frist.localeCompare(b.frist));
+
+    // Oppgaver med frist innen 30 dager (ikke fullført)
+    const oppgaverSnart = oppgaver.filter(o => {
+      if (o.fullfort || !o.frist) return false;
+      const d = new Date(o.frist + 'T00:00:00');
+      return d <= om30;
+    }).sort((a,b) => a.frist.localeCompare(b.frist));
+
+    // Fullførte todos
+    const fullforte = todos.filter(t => t.fullfort);
+
+    const tomListe = utenFrist.length === 0 && medFrist.length === 0 &&
+                     oppgaverSnart.length === 0 && fullforte.length === 0;
+    if (tomListe) {
+      const tom = document.createElement('div');
+      tom.style.cssText = 'padding:24px;text-align:center;font-size:13px;color:var(--tekst-sek);';
+      tom.textContent = 'Ingen to do-elementer ennå.';
+      container.appendChild(tom);
+      return;
+    }
+
+    // Helper: render a todo item
+    const lagTodoKort = t => {
+      const ytre = document.createElement('div');
+      ytre.style.cssText = 'position:relative;overflow:hidden;border-radius:var(--r);margin-bottom:1px;';
+
+      const slettBg = document.createElement('div');
+      slettBg.className = 'sveip-bakgrunn';
+      slettBg.innerHTML = `<div class="slett-sirkel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>`;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'sveip-innhold';
+
+      const kort = document.createElement('div');
+      kort.className = 'todo-kort' + (t.fullfort ? ' fullfort' : '');
+      kort.onclick = () => åpneTodoInfo(t.id);
+
+      const cb = document.createElement('div');
+      cb.className = 'todo-cb' + (t.fullfort ? ' sjekket' : '');
+      cb.innerHTML = t.fullfort ? '<svg width="9" height="9" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '';
+      cb.onclick = e => { e.stopPropagation(); toggleTodo(t.id); };
+
+      let metaHtml = '';
+      if (t.frist) metaHtml += fristSpan(t.frist, t.fullfort);
+      if (t.oppgaveId) {
+        const opp = oppgaver.find(o => o.id === t.oppgaveId);
+        if (opp) metaHtml += `<span class="tilknyttet-chip chip-fri" style="border-color:var(--grønn-mid);color:var(--tekst-sek);">${opp.beskrivelse}</span>`;
+      }
+      if (t.kategoriId) {
+        const katT = getKat(t.kategoriId);
+        if (katT) metaHtml += `<span class="tilknyttet-chip chip-${katT.id}">${katT.label}</span>`;
+      }
+
+      const info = document.createElement('div');
+      info.className = 'todo-info';
+      info.innerHTML = `<div class="todo-tittel">${t.tittel}</div>
+        ${metaHtml ? '<div class="todo-meta">' + metaHtml + '</div>' : ''}`;
+
+      kort.appendChild(cb);
+      kort.appendChild(info);
+      wrapper.appendChild(kort);
+      ytre.appendChild(slettBg);
+      ytre.appendChild(wrapper);
+      leggTilSveipSlett(ytre, wrapper, slettBg, () => {
+        todos = todos.filter(x => x.id !== t.id);
+        lagre(); renderTodos();
+      });
+      return ytre;
+    };
+
+    // Helper: render an oppgave as a compact row
+    const lagOppgaveKort = o => {
+      const ytre = document.createElement('div');
+      ytre.style.cssText = 'position:relative;overflow:hidden;border-radius:var(--r);margin-bottom:1px;';
+
+      const slettBg = document.createElement('div');
+      slettBg.className = 'sveip-bakgrunn';
+      slettBg.innerHTML = `<div class="slett-sirkel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>`;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'sveip-innhold';
+
+      const akt = o.aktivitetId ? aktiviteter.find(a => a.id === o.aktivitetId) : null;
+      const oType = akt?.type || o.kategoriId;
+      const stripeKlasse = oType ? 'stripe-' + oType : 'stripe-fri';
+
+      const kort = document.createElement('div');
+      kort.className = 'todo-kort' + (o.fullfort ? ' fullfort' : '');
+      kort.style.borderLeft = `3px solid ${getKat(oType)?.farge || 'var(--grønn-mid)'}`;
+      kort.style.cursor = 'pointer';
+      kort.onclick = () => åpneOppgaveInfo(o.id);
+
+      const cb = document.createElement('div');
+      cb.className = 'todo-cb' + (o.fullfort ? ' sjekket' : '');
+      cb.innerHTML = o.fullfort ? '<svg width="9" height="9" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '';
+      cb.onclick = e => { e.stopPropagation(); toggleOppgave(o.id); renderTodos(); };
+
+      let metaHtml = fristSpan(o.frist, o.fullfort);
+      if (akt) {
+        metaHtml += `<span class="tilknyttet-chip chip-${akt.type || "fri"}">${akt.tittel}</span>`;
+      } else if (o.kategoriId) {
+        const katO = getKat(o.kategoriId);
+        if (katO) metaHtml += `<span class="tilknyttet-chip chip-${katO.id}">${katO.label}</span>`;
+      }
+
+      const info = document.createElement('div');
+      info.className = 'todo-info';
+      info.innerHTML = `<div class="todo-tittel">${o.beskrivelse}</div>
+        ${metaHtml ? '<div class="todo-meta">' + metaHtml + '</div>' : ''}`;
+
+      kort.appendChild(cb);
+      kort.appendChild(info);
+      wrapper.appendChild(kort);
+      ytre.appendChild(slettBg);
+      ytre.appendChild(wrapper);
+      leggTilSveipSlett(ytre, wrapper, slettBg, () => {
+        oppgaver = oppgaver.filter(x => x.id !== o.id);
+        lagre(); renderTodos();
+      });
+      return ytre;
+    };
+
+    const lagSeksjon = label => {
+      const ml = document.createElement('div');
+      ml.className = 'maaned-label';
+      ml.textContent = label;
+      container.appendChild(ml);
+    };
+
+    // 1. Uten frist
+    if (utenFrist.length > 0) {
+      lagSeksjon('Ingen frist');
+      utenFrist.forEach(t => container.appendChild(lagTodoKort(t)));
+    }
+
+    // 2. Med frist — todos og oppgaver interleaved by date, grouped by month
+    const allemedFrist = [
+      ...medFrist.map(t => ({ dato: t.frist, type: 'todo', item: t })),
+      ...oppgaverSnart.map(o => ({ dato: o.frist, type: 'opp', item: o }))
+    ].sort((a,b) => a.dato.localeCompare(b.dato));
+
+    let sistMnd = null;
+    allemedFrist.forEach(({ dato, type, item }) => {
+      const d = new Date(dato + 'T00:00:00');
+      const mnd = MAANEDER[d.getMonth()] + ' ' + d.getFullYear();
+      if (mnd !== sistMnd) { lagSeksjon(mnd); sistMnd = mnd; }
+      container.appendChild(type === 'todo' ? lagTodoKort(item) : lagOppgaveKort(item));
+    });
+
+    // 3. Fullførte (todos + oppgaver)
+    const fullforteOpp = oppgaver.filter(o => o.fullfort);
+    if (fullforte.length > 0 || fullforteOpp.length > 0) {
+      lagSeksjon('Fullført');
+      fullforte.forEach(t => container.appendChild(lagTodoKort(t)));
+      fullforteOpp.forEach(o => container.appendChild(lagOppgaveKort(o)));
+    }
+  }
+
+  function toggleTodo(id) {
+    const t = todos.find(t => t.id === id);
+    if (t) {
+      t.fullfort = !t.fullfort;
+      t.fullfortDato = t.fullfort ? new Date().toISOString().slice(0,10) : null;
+      lagre(); renderTodos();
+    }
+  }
+
+  function settTodoFrist(dager) {
+    const d = new Date();
+    d.setDate(d.getDate() + dager);
+    document.getElementById('todoFeltFrist').value = d.toISOString().slice(0, 10);
+  }
+
+  function åpneTodoModal(id = null, preOppgaveId = null) {
+    redigTodoId = id;
+    const slettKnapp = document.getElementById('slettTodoKnapp');
+
+    // Fyll oppgaveliste – kun ikke-fullførte
+    const select = document.getElementById('todoFeltOppgave');
+    select.innerHTML = '<option value="">— Ingen —</option>';
+    oppgaver.filter(o => !o.fullfort).forEach(o => {
+      const opt = document.createElement('option');
+      opt.value = o.id;
+      opt.textContent = o.beskrivelse;
+      select.appendChild(opt);
+    });
+
+    // Fyll kategori-select
+    const todoKatSelect = document.getElementById('todoFeltKategori');
+    todoKatSelect.innerHTML = '<option value="">— Ingen —</option>';
+    kategorier.forEach(k => {
+      const opt = document.createElement('option');
+      opt.value = k.id; opt.textContent = k.label;
+      todoKatSelect.appendChild(opt);
+    });
+
+    if (id) {
+      const t = todos.find(t => t.id === id);
+      if (!t) return;
+      document.getElementById('todoModalTittel').textContent = 'Rediger to do';
+      document.getElementById('todoFeltTittel').value = t.tittel;
+      document.getElementById('todoFeltBesk').value   = t.beskrivelse || '';
+      document.getElementById('todoFeltFrist').value  = t.frist || '';
+      select.value = t.oppgaveId || '';
+      todoKatSelect.value = t.kategoriId || '';
+      slettKnapp.style.display = 'inline-flex';
+    } else {
+      document.getElementById('todoModalTittel').textContent = 'Ny to do';
+      document.getElementById('todoFeltTittel').value = '';
+      document.getElementById('todoFeltBesk').value   = '';
+      document.getElementById('todoFeltFrist').value  = '';
+      select.value = preOppgaveId || '';
+      todoKatSelect.value = '';
+      slettKnapp.style.display = 'none';
+    }
+    document.getElementById('todoModal').classList.add('vis');
+    setTimeout(() => document.getElementById('todoFeltTittel').focus(), 100);
+  }
+
+  function lagreTodo() {
+    const tittel = document.getElementById('todoFeltTittel').value.trim();
+    if (!tittel) { alert('Tittel er påkrevd.'); return; }
+    const besk       = document.getElementById('todoFeltBesk').value.trim();
+    const frist      = document.getElementById('todoFeltFrist').value || null;
+    const oppgaveId  = document.getElementById('todoFeltOppgave').value || null;
+    const kategoriId = document.getElementById('todoFeltKategori').value || null;
+
+    if (redigTodoId) {
+      const t = todos.find(t => t.id === redigTodoId);
+      if (t) { t.tittel = tittel; t.beskrivelse = besk; t.frist = frist; t.oppgaveId = oppgaveId; t.kategoriId = kategoriId; }
+    } else {
+      todos.push({ id: uid(), tittel, beskrivelse: besk, frist, oppgaveId, kategoriId, fullfort: false });
+    }
+    lagre(); lukkModal('todoModal'); renderTodos();
+  }
+
+  function slettTodo() {
+    if (!confirm('Slett denne to do?')) return;
+    todos = todos.filter(t => t.id !== redigTodoId);
+    lagre(); lukkModal('todoModal'); renderTodos();
+  }
+
+  function åpneTodoInfo(id) {
+    const t = todos.find(t => t.id === id);
+    if (!t) return;
+    window._todoInfoId = id;
+
+    document.getElementById('todoInfoModalTittel').textContent = t.tittel;
+
+    let html = '';
+    if (t.frist) {
+      const lbl = fristLabel(t.frist, t.fullfort);
+      html += `<div style="padding:10px 12px;border-radius:var(--rs);background:${lbl.farge === '#c0392b' ? '#fdeaea' : 'var(--grønn-lys)'};font-size:13px;color:${lbl.farge};font-weight:${lbl.vekt};margin-bottom:14px;">${lbl.tekst}</div>`;
+    }
+    if (t.beskrivelse) {
+      html += `<div style="padding:12px;background:var(--grønn-lys);border-radius:var(--rs);font-size:13px;color:var(--tekst);line-height:1.5;margin-bottom:14px;">${t.beskrivelse}</div>`;
+    }
+    if (t.oppgaveId) {
+      const opp = oppgaver.find(o => o.id === t.oppgaveId);
+      if (opp) html += `<div style="font-size:11px;font-weight:700;font-family:'Syne',sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Tilknyttet milepæl</div>
+        <div style="padding:10px 12px;background:var(--grønn-lys);border-radius:var(--rs);font-size:13px;color:var(--tekst);cursor:pointer;" onclick="lukkModal('todoInfoModal');åpneOppgaveInfo('${opp.id}')">${opp.beskrivelse}</div>`;
+    }
+    if (t.kategoriId) {
+      const katTI = getKat(t.kategoriId);
+      if (katTI) html += `<div style="margin-top:12px;">
+        <div style="font-size:11px;font-weight:700;font-family:'Syne',sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Kategori</div>
+        <span class="type-badge ${katTI.id}">${katTI.label}</span>
+      </div>`;
+    }
+    if (!t.frist && !t.beskrivelse && !t.oppgaveId && !t.kategoriId) {
+      html = `<div style="font-size:13px;color:var(--tekst-sek);">Ingen tilleggsinformasjon.</div>`;
+    }
+
+    document.getElementById('todoInfoModalBody').innerHTML = html;
+    document.getElementById('todoInfoFullfortKnapp').textContent = t.fullfort ? '↩ Angre fullført' : '✓ Merk fullført';
+    document.getElementById('todoInfoRedigKnapp').onclick = () => { lukkModal('todoInfoModal'); åpneTodoModal(id); };
+    document.getElementById('todoInfoSlettKnapp').onclick = () => {
+      if (!confirm('Slett denne to do?')) return;
+      todos = todos.filter(x => x.id !== id);
+      lagre(); lukkModal('todoInfoModal'); renderTodos();
+    };
+    window._todoInfoId = id;
+    document.getElementById('todoInfoModal').classList.add('vis');
+  }
+
+  function toggleTodoFraInfo() {
+    const id = window._todoInfoId;
+    if (!id) return;
+    toggleTodo(id);
+    åpneTodoInfo(id);
+  }
+
+  /* ──────────────────────────────
+     REDIGER KATEGORIER
+  ────────────────────────────── */
+  const KAT_FARGER = [
+    '#D4500A','#C0392B','#E67E22',
+    '#2563EB','#1A7A9A','#059669',
+    '#7C3AED','#8B2635','#C17D00',
+    '#2E7D32','#3D5A80','#6B4226'
+  ];
+
+  function åpneKategoriModal() {
+    renderKategoriModal();
+    document.getElementById('kategoriModal').classList.add('vis');
+  }
+
+  function renderKategoriModal() {
+    const body = document.getElementById('kategoriModalBody');
+    body.innerHTML = '';
+
+    kategorier.forEach(k => {
+      const rad = document.createElement('div');
+      rad.className = 'kat-rad';
+      rad.dataset.id = k.id;
+
+      // Farge-dot som åpner farge-velger
+      const dot = document.createElement('div');
+      dot.className = 'kat-farge-dot';
+      dot.style.background = k.farge;
+      dot.title = 'Velg farge';
+      dot.onclick = () => toggleFargeVelger(k.id, dot);
+
+      // Navn-input
+      const navnInput = document.createElement('input');
+      navnInput.className = 'kat-navn-input';
+      navnInput.value = k.label;
+      navnInput.onchange = () => {
+        k.label = navnInput.value.trim() || k.label;
+        lagre(); oppdaterAktivPanel();
+      };
+
+      // Slett-knapp
+      const slettBtn = document.createElement('button');
+      slettBtn.className = 'info-ikon-knapp slett';
+      slettBtn.title = 'Slett kategori';
+      slettBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>`;
+      slettBtn.onclick = () => slettKategori(k.id);
+
+      // Farge-velger (hidden)
+      const fargeVelger = document.createElement('div');
+      fargeVelger.className = 'kat-farge-velger';
+      fargeVelger.id = 'fargeVelger_' + k.id;
+      fargeVelger.style.display = 'none';
+      KAT_FARGER.forEach(farge => {
+        const d = document.createElement('div');
+        d.className = 'kat-farge-dot' + (k.farge === farge ? ' valgt' : '');
+        d.style.background = farge;
+        d.onclick = () => {
+          k.farge = farge;
+          dot.style.background = farge;
+          fargeVelger.querySelectorAll('.kat-farge-dot').forEach(x => x.classList.remove('valgt'));
+          d.classList.add('valgt');
+          genererKategoriCSS();
+          lagre(); oppdaterAktivPanel();
+        };
+        fargeVelger.appendChild(d);
+      });
+
+      const kolonne = document.createElement('div');
+      kolonne.style.flex = '1';
+      kolonne.appendChild(navnInput);
+      kolonne.appendChild(fargeVelger);
+
+      rad.appendChild(dot);
+      rad.appendChild(kolonne);
+      rad.appendChild(slettBtn);
+      body.appendChild(rad);
+    });
+
+    if (kategorier.length === 0) {
+      body.innerHTML = '<div style="font-size:13px;color:var(--tekst-sek);padding:8px 0;">Ingen kategorier. Legg til en ny.</div>';
+    }
+  }
+
+  function toggleFargeVelger(id, dotEl) {
+    const velger = document.getElementById('fargeVelger_' + id);
+    if (!velger) return;
+    const vis = velger.style.display === 'none';
+    // Lukk alle
+    document.querySelectorAll('.kat-farge-velger').forEach(v => v.style.display = 'none');
+    if (vis) velger.style.display = 'flex';
+  }
+
+  function leggTilKategori() {
+    const nyFarge = KAT_FARGER[kategorier.length % KAT_FARGER.length];
+    const nyId = uid();
+    kategorier.push({ id: nyId, label: 'Ny kategori', farge: nyFarge });
+    genererKategoriCSS();
+    lagre();
+    renderKategoriModal();
+    oppdaterAktivPanel();
+    // Fokuser på det nye navnfeltet
+    setTimeout(() => {
+      const inputs = document.querySelectorAll('#kategoriModalBody .kat-navn-input');
+      if (inputs.length) inputs[inputs.length - 1].focus();
+    }, 50);
+  }
+
+  function slettKategori(id) {
+    const k = kategorier.find(k => k.id === id);
+    if (!k) return;
+    const antall = aktiviteter.filter(a => a.type === id).length +
+                   oppgaver.filter(o => {
+                     const a = aktiviteter.find(a => a.id === o.aktivitetId);
+                     return a?.type === id;
+                   }).length;
+    const msg = antall > 0
+      ? `Slett kategorien «${k.label}»?\n\n${antall} element(er) vil miste kategoritilknytningen.`
+      : `Slett kategorien «${k.label}»?`;
+    if (!confirm(msg)) return;
+
+    // Nullstill type på berørte aktiviteter
+    aktiviteter.forEach(a => { if (a.type === id) a.type = null; });
+    kategorier = kategorier.filter(k => k.id !== id);
+    delete aktivitetFilterState[id];
+    delete oppgaveFilterState[id];
+    lagreFilterState('lp_fa', aktivitetFilterState);
+    lagreFilterState('lp_fo', oppgaveFilterState);
+    genererKategoriCSS();
+    lagre();
+    renderKategoriModal();
+    oppdaterAktivPanel();
+  }
+
+  /* ──────────────────────────────
+     FRIST HELPER
+  ────────────────────────────── */
+  function fristLabel(fristStr, fullfort = false) {
+    if (!fristStr) return null;
+    const iDag  = new Date(); iDag.setHours(0,0,0,0);
+    const fd    = new Date(fristStr + 'T00:00:00');
+    const diff  = Math.round((fd - iDag) / 86400000);
+    const datoStr = fd.getDate() + '. ' + MAANEDER[fd.getMonth()];
+
+    if (!fullfort && diff < 0)   return { tekst: `⚠ ${Math.abs(diff)} dag${Math.abs(diff)===1?'':'er'} over`,  farge: '#c0392b', vekt: '700' };
+    if (!fullfort && diff === 0) return { tekst: 'I dag!',              farge: '#d48826', vekt: '700' };
+    if (!fullfort && diff === 1) return { tekst: 'I morgen',            farge: '#d48826', vekt: '600' };
+    if (!fullfort && diff <= 6)  return { tekst: `Om ${diff} dager`,    farge: 'var(--tekst-sek)', vekt: '500' };
+    return { tekst: datoStr, farge: 'var(--tekst-sek)', vekt: '500' };
+  }
+
+  function fristSpan(fristStr, fullfort = false) {
+    const lbl = fristLabel(fristStr, fullfort);
+    if (!lbl) return '';
+    return `<span class="frist-tekst" style="color:${lbl.farge};font-weight:${lbl.vekt};">${lbl.tekst}</span>`;
+  }
+
+  /* ──────────────────────────────
+     SVEIP FOR Å SLETTE
+  ────────────────────────────── */
+  function leggTilSveipSlett(container, innhold, bakgrunn, onSlett) {
+    const TERSKEL = 90;
+    let startX = 0, startY = 0, dx = 0, sveiper = false, retningBestemt = false;
+
+    innhold.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      dx = 0; sveiper = false; retningBestemt = false;
+      innhold.classList.add('ingen-trans');
+    }, { passive: true });
+
+    innhold.addEventListener('touchmove', e => {
+      const curX = e.touches[0].clientX;
+      const curY = e.touches[0].clientY;
+      const diffX = curX - startX;
+      const diffY = curY - startY;
+
+      if (!retningBestemt) {
+        if (Math.abs(diffX) < 5 && Math.abs(diffY) < 5) return;
+        retningBestemt = true;
+        sveiper = Math.abs(diffX) > Math.abs(diffY) && diffX < 0;
+      }
+      if (!sveiper) return;
+      e.preventDefault();
+      dx = Math.min(0, diffX);
+      innhold.style.transform = `translateX(${dx}px)`;
+      // Vis sirkelen når vi har dratt nok
+      if (dx < -30) bakgrunn.classList.add('vis');
+      else bakgrunn.classList.remove('vis');
+    }, { passive: false });
+
+    innhold.addEventListener('touchend', () => {
+      innhold.classList.remove('ingen-trans');
+      if (dx < -TERSKEL) {
+        innhold.style.transform = `translateX(-100%)`;
+        innhold.style.opacity = '0';
+        innhold.style.transition = 'transform 0.2s ease, opacity 0.2s';
+        container.style.transition = 'max-height 0.25s ease, opacity 0.25s, padding 0.25s';
+        container.style.maxHeight = container.offsetHeight + 'px';
+        setTimeout(() => {
+          container.style.maxHeight = '0';
+          container.style.overflow = 'hidden';
+          container.style.opacity = '0';
+        }, 150);
+        setTimeout(onSlett, 380);
+      } else {
+        innhold.style.transform = 'translateX(0)';
+        bakgrunn.classList.remove('vis');
+        dx = 0;
+      }
+    });
+  }
+
+  function lagAktivitetKort(a, fraKalender = false) {
+    const ytre = document.createElement('div');
+    ytre.style.cssText = 'position:relative;overflow:hidden;border-radius:var(--r);margin-bottom:1px;';
+
+    const slettBg = document.createElement('div');
+    slettBg.className = 'sveip-bakgrunn';
+    slettBg.innerHTML = `<div class="slett-sirkel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>`;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'sveip-innhold';
+
+    const kort = document.createElement('div');
+    kort.className = 'aktivitet-kort' + (a.type ? ' hover-' + a.type : '');
+    kort.style.cursor = 'pointer';
+    kort.onclick = () => åpneAktivitetInfo(a.id);
+
+    const badge = document.createElement('span');
+    if (a.type) {
+      badge.className = `type-badge ${a.type}`;
+      badge.textContent = getKat(a.type)?.label || a.type;
+    }
+
+    const d = new Date(a.dato + 'T00:00:00');
+    let datoStr = UKEDAGER_K[d.getDay()] + ' ' + d.getDate() + '. ' + MAANEDER[d.getMonth()];
+    if (a.datoTil && a.datoTil !== a.dato) {
+      const dTil = new Date(a.datoTil + 'T00:00:00');
+      datoStr += '\u2013' + dTil.getDate() + '. ' + MAANEDER[dTil.getMonth()];
+    }
+    const tidStr = a.tid ? ('kl.\u00a0' + a.tid + (a.tidTil ? '\u2013' + a.tidTil : '')) : '';
+
+    const info = document.createElement('div');
+    info.className = 'aktivitet-info';
+    info.innerHTML = `
+      <div class="aktivitet-tittel">${a.tittel}</div>
+      <div class="aktivitet-meta">${datoStr}${tidStr ? '&nbsp;' + tidStr : ''}</div>`;
+
+    kort.appendChild(badge);
+    kort.appendChild(info);
+
+    const tilknyttedeOppgaver = oppgaver.filter(o => o.aktivitetId === a.id);
+    if (tilknyttedeOppgaver.length > 0) {
+      const antallUferdige = tilknyttedeOppgaver.filter(o => !o.fullfort).length;
+      if (antallUferdige > 0) {
+        const ob = document.createElement('span');
+        ob.className = 'oppgave-badge badge-' + a.type;
+        ob.textContent = '!';
+        ob.title = antallUferdige + ' milepæl(er) knyttet til denne aktiviteten';
+        ob.onclick = e => {
+          e.stopPropagation();
+          åpneAktivitetInfo(a.id);
+        };
+        kort.appendChild(ob);
+      }
+    }
+
+    // + knapp for å legge til oppgave knyttet til aktiviteten
+    const leggTilOppgaveKnapp = document.createElement('button');
+    leggTilOppgaveKnapp.className = 'ikon-knapp';
+    leggTilOppgaveKnapp.textContent = '+';
+    leggTilOppgaveKnapp.title = 'Legg til milepæl';
+    leggTilOppgaveKnapp.style.cssText = `font-size:18px;font-weight:400;color:${getKat(a.type)?.farge || 'var(--tekst-sek)'};line-height:1;`;    leggTilOppgaveKnapp.onclick = e => {
+      e.stopPropagation();
+      åpneOppgaveModal(null, a.id);
+    };
+    kort.appendChild(leggTilOppgaveKnapp);
+    wrapper.appendChild(kort);
+
+    ytre.appendChild(slettBg);
+    ytre.appendChild(wrapper);
+    leggTilSveipSlett(ytre, wrapper, slettBg, () => {
+      aktiviteter = aktiviteter.filter(x => x.id !== a.id);
+      oppgaver.forEach(o => { if (o.aktivitetId === a.id) o.aktivitetId = null; });
+      lagre();
+      oppdaterAktivPanel();
+    });
+    return ytre;
+  }
+
+  /* ──────────────────────────────
+     OPPGAVER
+  ────────────────────────────── */
+  function renderOppgaver() {
+    const container = document.getElementById('oppgaveListe');
+    const filterRad = document.getElementById('filterRad');
+
+    filterRad.innerHTML = '';
+
+    // Hvis vi viser en spesifikk aktivitet, vis eget header og tilbake-knapp
+    if (aktivFilter && aktivFilter.startsWith('aktivitet:')) {
+      const aktId = aktivFilter.slice(10);
+      const akt   = aktiviteter.find(a => a.id === aktId);
+      const pill  = document.createElement('button');
+      pill.className = 'filter-pill aktiv';
+      pill.textContent = '← ' + (akt ? akt.tittel : 'Aktivitet');
+      pill.onclick = () => { aktivFilter = null; renderOppgaver(); };
+      filterRad.appendChild(pill);
+    } else {
+      // Dynamiske kategori-filtere
+      kategorier.forEach(k => {        const pill = document.createElement('button');
+        const state = oppgaveFilterState[k.id] || 1;
+        let cls = 'filter-pill ';
+        if (state === 2) cls += 'aktiv-' + k.id;
+        else if (state === 3) cls += 'farge-' + k.id + ' ekskluder';
+        else cls += 'farge-' + k.id;
+        pill.className = cls;
+        pill.textContent = k.label;
+        pill.title = state === 1 ? 'Trykk for å vise kun denne' : state === 2 ? 'Trykk for å skjule denne' : 'Trykk for å vise alle';
+        pill.onclick = () => {
+          oppgaveFilterState[k.id] = (oppgaveFilterState[k.id] || 1) % 3 + 1;
+          lagreFilterState('lp_fo', oppgaveFilterState);
+          renderOppgaver();
+        };
+        filterRad.appendChild(pill);
+      });
+    }
+
+    let filtrert = [...oppgaver];
+
+    if (aktivFilter && aktivFilter.startsWith('aktivitet:')) {
+      const aktId = aktivFilter.slice(10);
+      filtrert = filtrert.filter(o => o.aktivitetId === aktId && !o.fullfort);
+    } else {
+      filtrert = filtrert.filter(o => !o.fullfort);
+      const harKunOpp = katIds().some(k => oppgaveFilterState[k] === 2);
+      if (harKunOpp) {
+        filtrert = filtrert.filter(o => {
+          const akt = aktiviteter.find(a => a.id === o.aktivitetId);
+          const type = akt?.type || o.kategoriId;
+          return type && oppgaveFilterState[type] === 2;
+        });
+      } else {
+        filtrert = filtrert.filter(o => {
+          const akt = aktiviteter.find(a => a.id === o.aktivitetId);
+          const type = akt?.type || o.kategoriId;
+          return !type || oppgaveFilterState[type] !== 3;
+        });
+      }
+    }
+
+    filtrert.sort((a, b) =>
+      (a.frist || '9999').localeCompare(b.frist || '9999')
+    );
+
+    if (filtrert.length === 0) {
+      container.innerHTML =
+        '<div class="tom-melding">Ingen milepæler her ennå.</div>';
+      return;
+    }
+
+    container.innerHTML = '';
+
+    // Group by month (frist-based; no-frist goes last under "Ingen frist")
+    const grupper = {};
+    filtrert.forEach(o => {
+      let key, label;
+      if (o.frist) {
+        const d = new Date(o.frist + 'T00:00:00');
+        key   = `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}`;
+        label = MAANEDER[d.getMonth()] + ' ' + d.getFullYear();
+      } else {
+        key   = '9999-99';
+        label = 'Ingen frist';
+      }
+      if (!grupper[key]) grupper[key] = { label, items: [] };
+      grupper[key].items.push(o);
+    });
+
+    Object.values(grupper).forEach(g => {
+      const ml = document.createElement('div');
+      ml.className = 'maaned-label';
+      ml.textContent = g.label;
+      container.appendChild(ml);
+
+      g.items.forEach(o => {
+      const aktR = o.aktivitetId ? aktiviteter.find(a => a.id === o.aktivitetId) : null;
+      const typeR = aktR?.type || o.kategoriId;
+      const stripeKlasse = typeR ? 'stripe-' + typeR : 'stripe-fri';
+
+      const ytre = document.createElement('div');
+      ytre.style.cssText = 'position:relative;overflow:hidden;border-radius:var(--r);margin-bottom:1px;';
+
+      const slettBg = document.createElement('div');
+      slettBg.className = 'sveip-bakgrunn';
+      slettBg.innerHTML = `<div class="slett-sirkel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>`;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'sveip-innhold';
+
+      const kort = document.createElement('div');
+      kort.className = 'oppgave-kort ' + stripeKlasse + (o.fullfort ? ' fullfort' : '');
+
+      const cb = document.createElement('div');
+      cb.className = 'checkbox' + (o.fullfort ? ' sjekket' : '');
+      cb.textContent = o.fullfort ? '✓' : '';
+      cb.onclick = e => { e.stopPropagation(); toggleOppgave(o.id); };
+
+      const info = document.createElement('div');
+      info.className = 'oppgave-info';
+
+      let metaHtml = '';
+      if (o.frist) metaHtml += fristSpan(o.frist, o.fullfort);
+      if (o.aktivitetId) {
+        const aktM = aktiviteter.find(a => a.id === o.aktivitetId);
+        if (aktM) metaHtml += `<span class="tilknyttet-chip chip-${aktM.type || "fri"}">${aktM.tittel}</span>`;
+      } else if (o.kategoriId) {
+        const katM = getKat(o.kategoriId);
+        if (katM) metaHtml += `<span class="tilknyttet-chip chip-${katM.id}">${katM.label}</span>`;
+      }
+      const oppTodos = todos.filter(t => t.oppgaveId === o.id);
+      if (oppTodos.length > 0) {
+        const fullf = oppTodos.filter(t => t.fullfort).length;
+        metaHtml += `<span style="font-size:11px;color:var(--tekst-sek);white-space:nowrap;">${fullf}/${oppTodos.length} to-do</span>`;
+      }
+
+      info.innerHTML = `
+        <div class="oppgave-besk">${o.beskrivelse}</div>
+        ${metaHtml ? '<div class="oppgave-meta">' + metaHtml + '</div>' : ''}`;
+
+      kort.style.cursor = 'pointer';
+      kort.onclick = () => åpneOppgaveInfo(o.id);
+
+      kort.appendChild(cb);
+      kort.appendChild(info);
+      wrapper.appendChild(kort);
+
+      ytre.appendChild(slettBg);
+      ytre.appendChild(wrapper);
+      leggTilSveipSlett(ytre, wrapper, slettBg, () => {
+        todos.forEach(t => { if (t.oppgaveId === o.id) t.oppgaveId = null; });
+        oppgaver = oppgaver.filter(x => x.id !== o.id);
+        lagre();
+        renderOppgaver();
+        renderTodos();
+      });
+      container.appendChild(ytre);
+      }); // end g.items.forEach
+    }); // end Object.values(grupper).forEach
+  }
+
+  function åpneOppgaveInfo(id) {
+    const o = oppgaver.find(o => o.id === id);
+    if (!o) return;
+
+    document.getElementById('oppInfoModalTittel').textContent = o.beskrivelse;
+
+    const akt = o.aktivitetId ? aktiviteter.find(a => a.id === o.aktivitetId) : null;
+    const fd  = o.frist ? new Date(o.frist + 'T00:00:00') : null;
+    const iDag = new Date(); iDag.setHours(0,0,0,0);
+    const forfalt = fd && !o.fullfort && fd < iDag;
+
+    let html = '';
+
+    // Status — kun vis hvis fullført
+    if (o.fullfort) {
+      html += `<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--grønn);flex-shrink:0;background:var(--grønn);display:flex;align-items:center;justify-content:center;">
+          <svg width="12" height="12" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span style="font-size:13px;color:var(--tekst-sek);">Fullført</span>
+      </div>`;
+    }
+
+    // Frist
+    if (fd) {
+      const lbl = fristLabel(o.frist, o.fullfort);
+      html += `<div style="padding:10px 12px;border-radius:var(--rs);background:${forfalt ? '#fdeaea' : 'var(--grønn-lys)'};font-size:13px;color:${lbl.farge};font-weight:${lbl.vekt};margin-bottom:14px;">
+        ${lbl.tekst}
+      </div>`;
+    }
+
+    // Tilknyttet aktivitet
+    if (akt) {
+      const ad = new Date(akt.dato + 'T00:00:00');
+      html += `<div style="margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;font-family:'Syne',sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Tilknyttet aktivitet</div>
+        <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--grønn-lys);border-radius:var(--rs);cursor:pointer;" onclick="lukkModal('oppgaveInfoModal');åpneAktivitetInfo('${akt.id}')">
+          <span class="type-badge ${akt.type || ''}" style="font-size:10px;">${getKat(akt.type)?.label || ''}</span>
+          <span style="font-size:13px;font-weight:600;color:var(--tekst);">${akt.tittel}</span>
+          <span style="font-size:12px;color:var(--tekst-sek);margin-left:auto;">${ad.getDate()}. ${MAANEDER[ad.getMonth()]}</span>
+        </div>
+      </div>`;
+    } else if (o.kategoriId) {
+      const katI = getKat(o.kategoriId);
+      if (katI) html += `<div style="margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;font-family:'Syne',sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Kategori</div>
+        <span class="type-badge ${katI.id}">${katI.label}</span>
+      </div>`;
+    }
+
+    // Notater
+    if (o.notat) {
+      html += `<div style="margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;font-family:'Syne',sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Notater</div>
+        <div style="padding:12px;background:var(--grønn-lys);border-radius:var(--rs);font-size:13px;color:var(--tekst);line-height:1.5;">${o.notat}</div>
+      </div>`;
+    }
+
+    // Tilknyttede to-do elementer
+    const tilknyttedeTodos = todos.filter(t => t.oppgaveId === id);
+    if (tilknyttedeTodos.length > 0) {
+      const antallFullfort = tilknyttedeTodos.filter(t => t.fullfort).length;
+      const antallTotalt   = tilknyttedeTodos.length;
+      const prosent        = Math.round((antallFullfort / antallTotalt) * 100);
+
+      html += `<div style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="font-size:11px;font-weight:700;font-family:'Syne',sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;">To-do (${antallFullfort} av ${antallTotalt})</div>
+          <div style="font-size:11px;font-weight:700;color:var(--grønn);">${prosent}%</div>
+        </div>
+        <div style="height:5px;background:var(--kant);border-radius:3px;margin-bottom:10px;overflow:hidden;">
+          <div style="height:100%;width:${prosent}%;background:var(--grønn);border-radius:3px;transition:width .3s;"></div>
+        </div>`;
+
+      tilknyttedeTodos.forEach(t => {
+        html += `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--kant);cursor:pointer;" onclick="lukkModal('oppgaveInfoModal');åpneTodoInfo('${t.id}')">
+          <div style="width:18px;height:18px;border-radius:50%;border:2px solid ${t.fullfort ? 'var(--grønn)' : 'var(--grønn-mid)'};flex-shrink:0;background:${t.fullfort ? 'var(--grønn)' : 'transparent'};display:flex;align-items:center;justify-content:center;">
+            ${t.fullfort ? '<svg width="9" height="9" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''}
+          </div>
+          <div style="flex:1;font-size:13px;color:var(--tekst);${t.fullfort ? 'opacity:0.4;text-decoration:line-through;' : ''}">${t.tittel}</div>
+          ${t.frist ? `<div style="font-size:11px;color:var(--tekst-sek);">${fristLabel(t.frist, t.fullfort).tekst}</div>` : ''}
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    document.getElementById('oppInfoModalBody').innerHTML = html;
+    document.getElementById('oppInfoLeggTilTodoKnapp').onclick = () => {
+      lukkModal('oppgaveInfoModal');
+      åpneTodoModal(null, id);
+    };
+    document.getElementById('oppInfoRedigKnapp').onclick = () => {
+      lukkModal('oppgaveInfoModal');
+      åpneOppgaveModal(id);
+    };
+    document.getElementById('oppInfoSlettKnapp').onclick = () => {
+      if (!confirm('Slett denne milepælen?')) return;
+      todos.forEach(t => { if (t.oppgaveId === id) t.oppgaveId = null; });
+      oppgaver = oppgaver.filter(x => x.id !== id);
+      lagre(); lukkModal('oppgaveInfoModal'); renderOppgaver(); renderTodos();
+    };
+    document.getElementById('oppInfoFullfortKnapp').textContent = o.fullfort ? '↩ Angre fullført' : '✓ Merk fullført';
+    window._oppInfoId = id;
+    document.getElementById('oppgaveInfoModal').classList.add('vis');
+  }
+
+  function toggleOppgaveFraInfo() {
+    const id = window._oppInfoId;
+    if (!id) return;
+    toggleOppgave(id);
+    åpneOppgaveInfo(id); // refresh
+  }
+
+  function toggleOppgave(id) {
+    const o = oppgaver.find(o => o.id === id);
+    if (o) {
+      o.fullfort = !o.fullfort;
+      o.fullfortDato = o.fullfort ? new Date().toISOString().slice(0,10) : null;
+      lagre(); renderOppgaver(); renderTodos();
+    }
+  }
+
+  /* ──────────────────────────────
+     AKTIVITET MODAL
+  ────────────────────────────── */
+  function åpneAktivitetInfo(id) {
+    const a = aktiviteter.find(a => a.id === id);
+    if (!a) return;
+
+    const d = new Date(a.dato + 'T00:00:00');
+    let datoStr = UKEDAGER_K[d.getDay()] + ' ' + d.getDate() + '. ' + MAANEDER[d.getMonth()] + ' ' + d.getFullYear();
+    if (a.datoTil && a.datoTil !== a.dato) {
+      const dTil = new Date(a.datoTil + 'T00:00:00');
+      datoStr += ' – ' + dTil.getDate() + '. ' + MAANEDER[dTil.getMonth()];
+    }
+    const tidStr = a.tid ? ('kl. ' + a.tid + (a.tidTil ? '–' + a.tidTil : '')) : '';
+
+    document.getElementById('infoModalTittel').textContent = a.tittel;
+
+    const body = document.getElementById('infoModalBody');
+
+    let html = `
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+        ${a.type ? `<span class="type-badge ${a.type}">${getKat(a.type)?.label || a.type}</span>` : ''}
+      </div>
+      <div style="font-size:13px;color:var(--tekst-sek);margin-bottom:4px;">${datoStr}${tidStr ? ' · ' + tidStr : ''}</div>`;
+
+    if (a.beskrivelse) {
+      html += `<div style="margin-top:14px;padding:12px;background:var(--grønn-lys);border-radius:var(--rs);font-size:13px;color:var(--tekst);line-height:1.5;">${a.beskrivelse}</div>`;
+    }
+
+    body.innerHTML = html;
+
+    // Render oppgaver as proper cards like calendar view
+    const tilknyttede = oppgaver.filter(o => o.aktivitetId === a.id && !o.fullfort);
+    if (tilknyttede.length > 0) {
+      const header = document.createElement('div');
+      header.style.cssText = 'margin-top:18px;font-size:11px;font-weight:700;font-family:"Syne",sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;';
+      header.textContent = `Milepæler (${tilknyttede.length})`;
+      body.appendChild(header);
+
+      tilknyttede.forEach(o => {
+        const ytre = document.createElement('div');
+        ytre.style.cssText = 'position:relative;overflow:hidden;border-radius:var(--r);margin-bottom:1px;';
+
+        const slettBg = document.createElement('div');
+        slettBg.className = 'sveip-bakgrunn';
+        slettBg.innerHTML = `<div class="slett-sirkel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>`;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'sveip-innhold';
+
+        const kort = document.createElement('div');
+        kort.className = 'oppgave-kort stripe-' + a.type + (o.fullfort ? ' fullfort' : '');
+        kort.style.cursor = 'pointer';
+        kort.onclick = () => { lukkModal('aktivitetInfoModal'); åpneOppgaveInfo(o.id); };
+
+        const cb = document.createElement('div');
+        cb.className = 'checkbox' + (o.fullfort ? ' sjekket' : '');
+        cb.textContent = o.fullfort ? '✓' : '';
+        cb.onclick = e => {
+          e.stopPropagation();
+          toggleOppgave(o.id);
+          åpneAktivitetInfo(id);
+        };
+
+        const info = document.createElement('div');
+        info.className = 'oppgave-info';
+        const metaHtml = o.frist ? fristSpan(o.frist, o.fullfort) : '';
+        info.innerHTML = `<div class="oppgave-besk">${o.beskrivelse}</div>
+          ${metaHtml ? '<div class="oppgave-meta">' + metaHtml + '</div>' : ''}`;
+
+        kort.appendChild(cb);
+        kort.appendChild(info);
+        wrapper.appendChild(kort);
+        ytre.appendChild(slettBg);
+        ytre.appendChild(wrapper);
+        leggTilSveipSlett(ytre, wrapper, slettBg, () => {
+          oppgaver = oppgaver.filter(x => x.id !== o.id);
+          lagre();
+          åpneAktivitetInfo(id);
+        });
+        body.appendChild(ytre);
+      });
+    } else {
+      const tom = document.createElement('div');
+      tom.style.cssText = 'margin-top:18px;font-size:13px;color:var(--tekst-sek);';
+      tom.textContent = 'Ingen milepæler knyttet til denne aktiviteten.';
+      body.appendChild(tom);
+    }
+
+    document.getElementById('infoModalRedigKnapp').onclick = () => {
+      lukkModal('aktivitetInfoModal');
+      åpneAktivitetModal(id);
+    };
+    document.getElementById('infoModalSlettKnapp').onclick = () => {
+      if (!confirm('Slett denne aktiviteten?')) return;
+      aktiviteter = aktiviteter.filter(x => x.id !== id);
+      oppgaver.forEach(o => { if (o.aktivitetId === id) o.aktivitetId = null; });
+      lagre(); lukkModal('aktivitetInfoModal'); oppdaterAktivPanel();
+      if (valgtDato) renderValgtDag(valgtDato);
+    };
+    document.getElementById('infoModalLeggTilOppgaveKnapp').onclick = () => {
+      lukkModal('aktivitetInfoModal');
+      åpneOppgaveModal(null, id);
+    };
+    document.getElementById('aktivitetInfoModal').classList.add('vis');
+  }
+
+  function åpneAktivitetModal(id = null, dato = null) {
+    // Fyll kategorier dynamisk
+    const feltType = document.getElementById('feltType');
+    feltType.innerHTML = '';
+    kategorier.forEach(k => {
+      const opt = document.createElement('option');
+      opt.value = k.id; opt.textContent = k.label;
+      feltType.appendChild(opt);
+    });
+    const slettKnapp = document.getElementById('slettAktivitetKnapp');
+
+    if (id) {
+      const a = aktiviteter.find(a => a.id === id);
+      if (!a) return;
+      document.getElementById('aktivitetModalTittel').textContent = 'Rediger aktivitet';
+      document.getElementById('feltTittel').value  = a.tittel;
+      document.getElementById('feltType').value    = a.type;
+      document.getElementById('feltDato').value    = a.dato;
+      document.getElementById('feltDatoTil').value = a.datoTil || a.dato;
+      document.getElementById('feltTid').value     = a.tid    || '';
+      document.getElementById('feltTidTil').value  = a.tidTil || '';
+      document.getElementById('feltBesk').value   = a.beskrivelse || '';
+      slettKnapp.style.display = 'block';
+    } else {
+      document.getElementById('aktivitetModalTittel').textContent = 'Ny aktivitet';
+      document.getElementById('feltTittel').value  = '';
+      document.getElementById('feltType').value    = kategorier[0]?.id || '';
+      const defaultDato = dato || new Date().toISOString().slice(0, 10);
+      document.getElementById('feltDato').value    = defaultDato;
+      document.getElementById('feltDatoTil').value = defaultDato;
+      document.getElementById('feltTid').value     = '';
+      document.getElementById('feltTidTil').value  = '';
+      document.getElementById('feltBesk').value   = '';
+      slettKnapp.style.display = 'none';
+    }
+    document.getElementById('aktivitetModal').classList.add('vis');
+    setTimeout(() => document.getElementById('feltTittel').focus(), 100);
+  }
+
+  function lagreAktivitet() {
+    const tittel  = document.getElementById('feltTittel').value.trim();
+    const type    = document.getElementById('feltType').value;
+    const dato    = document.getElementById('feltDato').value;
+    const datoTil = document.getElementById('feltDatoTil').value || dato;
+    const tid     = document.getElementById('feltTid').value;
+    const tidTil  = document.getElementById('feltTidTil').value;
+    const besk    = document.getElementById('feltBesk').value.trim();
+
+    if (!tittel) { alert('Tittel er påkrevd.'); return; }
+    if (!dato)   { alert('Dato er påkrevd.'); return; }
+
+    if (redigAktivitetId) {
+      const a = aktiviteter.find(a => a.id === redigAktivitetId);
+      Object.assign(a, { tittel, type, dato, datoTil, tid, tidTil, beskrivelse: besk });
+    } else {
+      aktiviteter.push({ id: uid(), tittel, type, dato, datoTil, tid, tidTil, beskrivelse: besk });
+    }
+
+    lagre();
+    lukkModal('aktivitetModal');
+    oppdaterAktivPanel();
+    if (valgtDato) renderValgtDag(valgtDato);
+  }
+
+  function slettAktivitet() {
+    if (!confirm('Slett denne aktiviteten?')) return;
+    aktiviteter = aktiviteter.filter(a => a.id !== redigAktivitetId);
+    oppgaver.forEach(o => { if (o.aktivitetId === redigAktivitetId) o.aktivitetId = null; });
+    lagre();
+    lukkModal('aktivitetModal');
+    oppdaterAktivPanel();
+    if (valgtDato) renderValgtDag(valgtDato);
+  }
+
+  /* ──────────────────────────────
+     OPPGAVE MODAL
+  ────────────────────────────── */
+  let valgtFristValg = 'ingen';
+
+  function velgFrist(el) {
+    document.querySelectorAll('.frist-rad').forEach(r => r.classList.remove('aktiv'));
+    el.classList.add('aktiv');
+    valgtFristValg = el.dataset.valg;
+    const egFelt   = document.getElementById('fristEgFelt');
+    const infoEl   = document.getElementById('fristRelativInfo');
+    egFelt.classList.toggle('vis', valgtFristValg === 'egendefinert');
+
+    // Vis beregnet dato for relative valg
+    if (valgtFristValg !== 'ingen' && valgtFristValg !== 'egendefinert') {
+      const aktId = document.getElementById('oppFeltAktivitet').value;
+      const akt   = aktiviteter.find(a => a.id === aktId);
+      const base  = akt ? new Date(akt.dato + 'T00:00:00') : new Date();
+      const dato  = regnUtFristDato(valgtFristValg, base);
+      if (dato) {
+        infoEl.textContent = '→ ' + dato.getDate() + '. ' + MAANEDER[dato.getMonth()] + ' ' + dato.getFullYear();
+        infoEl.style.display = 'block';
+      }
+    } else {
+      infoEl.style.display = 'none';
+    }
+  }
+
+  function regnUtFristDato(valg, base) {
+    const d = new Date(base);
+    if (valg === '1dag') d.setDate(d.getDate() - 1);
+    else if (valg === '3dag') d.setDate(d.getDate() - 3);
+    else if (valg === '1uke') d.setDate(d.getDate() - 7);
+    else if (valg === '1mnd') d.setMonth(d.getMonth() - 1);
+    else return null;
+    return d;
+  }
+
+  function oppdaterFristInfo() {
+    if (valgtFristValg !== 'ingen' && valgtFristValg !== 'egendefinert') {
+      velgFrist(document.querySelector(`.frist-rad[data-valg="${valgtFristValg}"]`));
+    }
+  }
+
+  function åpneOppgaveModal(id = null, preAktivitetId = null) {
+    redigOppgaveId = id;
+    const slettKnapp = document.getElementById('slettOppgaveKnapp');
+    const select     = document.getElementById('oppFeltAktivitet');
+
+    // Fyll kategori-select
+    const katSelect = document.getElementById('oppFeltKategori');
+    katSelect.innerHTML = '<option value="">— Ingen —</option>';
+    kategorier.forEach(k => {
+      const opt = document.createElement('option');
+      opt.value = k.id; opt.textContent = k.label;
+      katSelect.appendChild(opt);
+    });
+
+    // Fyll aktivitetsliste – kun fremtidige/pågående (behold gjeldende valg om det finnes)
+    const iDagStr = new Date().toISOString().slice(0, 10);
+    const currentAktId = id ? (oppgaver.find(o => o.id === id)?.aktivitetId || null) : null;
+    select.innerHTML = '<option value="">— Frittstående —</option>';
+    [...aktiviteter]
+      .filter(a => (a.datoTil || a.dato) >= iDagStr || a.id === currentAktId)
+      .sort((a, b) => a.dato.localeCompare(b.dato))
+      .forEach(a => {
+        const d   = new Date(a.dato + 'T00:00:00');
+        const opt = document.createElement('option');
+        opt.value       = a.id;
+        opt.textContent = `${a.tittel}  (${d.getDate()}. ${MAANEDER[d.getMonth()]})`;
+        select.appendChild(opt);
+      });
+
+    // Reset frist picker
+    valgtFristValg = 'ingen';
+    document.querySelectorAll('.frist-rad').forEach(r => r.classList.remove('aktiv'));
+    document.querySelector('.frist-rad[data-valg="ingen"]').classList.add('aktiv');
+    document.getElementById('fristEgFelt').classList.remove('vis');
+    document.getElementById('oppFeltFrist').value = '';
+    document.getElementById('fristRelativInfo').style.display = 'none';
+
+    if (id) {
+      const o = oppgaver.find(o => o.id === id);
+      document.getElementById('oppgaveModalTittel').textContent = 'Rediger milepæl';
+      document.getElementById('oppFeltBesk').value  = o.beskrivelse;
+      document.getElementById('oppFeltNotat').value = o.notat || '';
+      select.value = o.aktivitetId || '';
+      katSelect.value = o.kategoriId || '';
+      if (o.aktivitetId && !o.kategoriId) {
+        const aktKat = aktiviteter.find(a => a.id === o.aktivitetId);
+        if (aktKat) katSelect.value = aktKat.type;
+      }
+
+      // Gjenopprett fristvalg
+      if (o.frist) {
+        document.getElementById('oppFeltFrist').value = o.frist;
+        document.querySelectorAll('.frist-rad').forEach(r => r.classList.remove('aktiv'));
+        document.querySelector('.frist-rad[data-valg="egendefinert"]').classList.add('aktiv');
+        document.getElementById('fristEgFelt').classList.add('vis');
+        valgtFristValg = 'egendefinert';
+      }
+      slettKnapp.style.display = 'block';
+    } else {
+      document.getElementById('oppgaveModalTittel').textContent = 'Ny milepæl';
+      document.getElementById('oppFeltBesk').value  = '';
+      document.getElementById('oppFeltNotat').value = '';
+      select.value = preAktivitetId || '';
+      katSelect.value = '';
+      if (preAktivitetId) {
+        const preAkt = aktiviteter.find(a => a.id === preAktivitetId);
+        if (preAkt) katSelect.value = preAkt.type;
+      }
+      slettKnapp.style.display = 'none';
+    }
+    document.getElementById('oppgaveModal').classList.add('vis');
+    setTimeout(() => document.getElementById('oppFeltBesk').focus(), 100);
+  }
+
+  function lagreOppgave() {
+    const besk        = document.getElementById('oppFeltBesk').value.trim();
+    const notat       = document.getElementById('oppFeltNotat').value.trim();
+    const aktivitetId = document.getElementById('oppFeltAktivitet').value || null;
+    const kategoriId  = document.getElementById('oppFeltKategori').value || null;
+
+    if (!besk) { alert('Tittel er påkrevd.'); return; }
+
+    let frist = '';
+    if (valgtFristValg === 'egendefinert') {
+      frist = document.getElementById('oppFeltFrist').value;
+      if (!frist) { alert('Velg en dato for fristen.'); return; }
+    } else if (valgtFristValg !== 'ingen') {
+      const akt  = aktiviteter.find(a => a.id === aktivitetId);
+      const base = akt ? new Date(akt.dato + 'T00:00:00') : new Date();
+      const dato = regnUtFristDato(valgtFristValg, base);
+      if (dato) frist = dato.toISOString().slice(0, 10);
+    }
+
+    if (redigOppgaveId) {
+      const o = oppgaver.find(o => o.id === redigOppgaveId);
+      Object.assign(o, { beskrivelse: besk, notat, frist, aktivitetId, kategoriId });
+    } else {
+      const nyOppgave = { id: uid(), beskrivelse: besk, notat, frist, aktivitetId, kategoriId, fullfort: false };
+      oppgaver.push(nyOppgave);
+    }
+
+    lagre();
+    lukkModal('oppgaveModal');
+    renderOppgaver();
+    if (valgtDato) renderValgtDag(valgtDato);
+  }
+
+  function slettOppgave() {
+    if (!confirm('Slett denne milepælen?')) return;
+    todos.forEach(t => { if (t.oppgaveId === redigOppgaveId) t.oppgaveId = null; });
+    oppgaver = oppgaver.filter(o => o.id !== redigOppgaveId);
+    lagre();
+    lukkModal('oppgaveModal');
+    renderOppgaver();
+    renderTodos();
+    if (valgtDato) renderValgtDag(valgtDato);
+  }
+
+  /* ──────────────────────────────
+     MODAL UTILS
+  ────────────────────────────── */
+  function lukkModal(id) {
+    document.getElementById(id).classList.remove('vis');
+  }
+
+  function oppdaterAktivPanel() {
+    const aktiv = document.querySelector('.panel.aktiv')?.id;
+    if (aktiv === 'panel-todo')     renderTodos();
+    if (aktiv === 'panel-kalender') {
+      if (kalVisning === 'uke') renderUke();
+      else { renderKalender(); if (valgtDato) renderValgtDag(valgtDato); }
+    }
+    if (aktiv === 'panel-liste')    renderListe();
+    if (aktiv === 'panel-oppgaver') renderOppgaver();
+  }
+
+  // Klikk utenfor modal lukker den
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) overlay.classList.remove('vis');
+    });
+  });
+
+  // ESC lukker modal
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape')
+      document.querySelectorAll('.modal-overlay.vis')
+        .forEach(m => m.classList.remove('vis'));
+  });
+
+  // Enter i tekstfelt lagrer
+  document.getElementById('feltTittel').addEventListener('keydown', e => {
+    if (e.key === 'Enter') lagreAktivitet();
+  });
+  document.getElementById('oppFeltBesk').addEventListener('keydown', e => {
+    if (e.key === 'Enter') lagreOppgave();
+  });
+
+  // Oppdater fristinfo og kategori når aktivitet endres
+  document.getElementById('oppFeltAktivitet').addEventListener('change', function() {
+    oppdaterFristInfo();
+    const aktId = this.value;
+    if (aktId) {
+      const akt = aktiviteter.find(a => a.id === aktId);
+      if (akt) document.getElementById('oppFeltKategori').value = akt.type;
+    }
+  });
+
+  /* ──────────────────────────────
+     IMPORT / EKSPORT
+  ────────────────────────────── */
+  function eksporterData() {
+    const payload = {
+      versjon: '1.79',
+      eksportert: new Date().toISOString(),
+      aktiviteter, oppgaver, todos, kategorier
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const el   = document.createElement('a');
+    el.href     = url;
+    el.download = 'horizon-proposal-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(el);
+    el.click();
+    document.body.removeChild(el);
+    URL.revokeObjectURL(url);
+  }
+
+  // Snapshot for angre-funksjon
+  let importSnapshot = null;
+
+  function taSnapshot() {
+    importSnapshot = {
+      aktiviteter: JSON.parse(JSON.stringify(aktiviteter)),
+      oppgaver:    JSON.parse(JSON.stringify(oppgaver)),
+      todos:       JSON.parse(JSON.stringify(todos)),
+      kategorier:  JSON.parse(JSON.stringify(kategorier))
+    };
+    document.getElementById('angreImportKnapp').style.display = 'inline-flex';
+  }
+
+  function angreImport() {
+    if (!importSnapshot) return;
+    if (!confirm('Angre siste import/merge og gå tilbake til forrige tilstand?')) return;
+    aktiviteter = importSnapshot.aktiviteter;
+    oppgaver    = importSnapshot.oppgaver;
+    todos       = importSnapshot.todos;
+    kategorier  = importSnapshot.kategorier || kategorier;
+    importSnapshot = null;
+    document.getElementById('angreImportKnapp').style.display = 'none';
+    genererKategoriCSS();
+    lagre(); oppdaterAktivPanel();
+    if (valgtDato) renderValgtDag(valgtDato);
+    alert('✓ Import angret.');
+  }
+
+  function importerData(input) {
+    const fil = input.files[0];
+    if (!fil) return;
+    const leser = new FileReader();
+    leser.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!Array.isArray(data.aktiviteter) || !Array.isArray(data.oppgaver)) {
+          alert('Filen ser ikke ut til å være en gyldig Horizon Proposal-eksport.'); return;
+        }
+        const bekreft = confirm(
+          'Dette vil erstatte alle eksisterende aktiviteter og milepæler med dataene fra filen.\n\nFortsette?'
+        );
+        if (!bekreft) return;
+        taSnapshot();
+        aktiviteter = data.aktiviteter;
+        oppgaver    = data.oppgaver;
+        lagre();
+        oppdaterAktivPanel();
+        alert('✓ Data importert.');
+      } catch {
+        alert('Kunne ikke lese filen. Sjekk at det er en gyldig .json-fil.');
+      }
+    };
+    leser.readAsText(fil);
+    input.value = ''; // reset så samme fil kan importeres igjen
+  }
+
+  function mergeData(input) {
+    const fil = input.files[0];
+    if (!fil) return;
+    const leser = new FileReader();
+    leser.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!Array.isArray(data.aktiviteter) || !Array.isArray(data.oppgaver)) {
+          alert('Filen ser ikke ut til å være en gyldig Horizon Proposal-eksport.'); return;
+        }
+
+        // Merge: legg til kun elementer med nye IDer
+        const eksisterendeAktId = new Set(aktiviteter.map(a => a.id));
+        const eksisterendeOppId = new Set(oppgaver.map(o => o.id));
+        const eksisterendeTodId = new Set(todos.map(t => t.id));
+
+        const nyeAkt = data.aktiviteter.filter(a => !eksisterendeAktId.has(a.id));
+        const nyeOpp = data.oppgaver.filter(o => !eksisterendeOppId.has(o.id));
+        const nyeTod = (data.todos || []).filter(t => !eksisterendeTodId.has(t.id));
+
+        if (nyeAkt.length === 0 && nyeOpp.length === 0 && nyeTod.length === 0) {
+          alert('Ingen nye elementer å legge til — alt fantes fra før.');
+          return;
+        }
+
+        taSnapshot();
+        aktiviteter = [...aktiviteter, ...nyeAkt];
+        oppgaver    = [...oppgaver,    ...nyeOpp];
+        todos       = [...todos,       ...nyeTod];
+
+        lagre();
+        oppdaterAktivPanel();
+        alert(`✓ Slått sammen: ${nyeAkt.length} nye aktiviteter og ${nyeOpp.length} nye milepæler lagt til.`);
+      } catch {
+        alert('Kunne ikke lese filen. Sjekk at det er en gyldig .json-fil.');
+      }
+    };
+    leser.readAsText(fil);
+    input.value = '';
+  }
+  function ryddFullforte() {
+    const iDag = new Date();
+    const grense = new Date(iDag); grense.setDate(iDag.getDate() - 3);
+    const g3 = grense.toISOString().slice(0,10);
+    const forOpp = oppgaver.length;
+    const forTod = todos.length;
+    oppgaver = oppgaver.filter(o => !(o.fullfort && (!o.fullfortDato || o.fullfortDato < g3)));
+    todos    = todos.filter(t => !(t.fullfort && (!t.fullfortDato || t.fullfortDato < g3)));
+    if (oppgaver.length !== forOpp || todos.length !== forTod) lagre();
+  }
+
+  function init() {
+    hent();
+    ryddFullforte();
+    renderTodos();
+    renderKalender();
+    oppdaterForfaltBadge();
+  }
+
+  function be0mVarsel() {
+    document.getElementById('varselBanner').style.display = 'none';
+    Notification.requestPermission().then(result => {
+      if (result === 'granted') {
+        oppdaterForfaltBadge();
+      }
+    });
+  }
+
+  function avvisVarsel() {
+    document.getElementById('varselBanner').style.display = 'none';
+    localStorage.setItem('varsel_avvist', '1');
+  }
+
+  init();
+</script>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  import { getFirestore, doc, setDoc, getDoc, onSnapshot }
+    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC_6N483KSKRNQaQZ-Jsxh01fWR5cT5iLA",
+    authDomain: "mishmash-wp4.firebaseapp.com",
+    projectId: "mishmash-wp4",
+    storageBucket: "mishmash-wp4.firebasestorage.app",
+    messagingSenderId: "220759938476",
+    appId: "1:220759938476:web:da647c94b80553deea9609"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ── Eksponér til resten av appen ──
+  window._fbSignIn = async () => {
+    try {
+      await signInWithPopup(auth, new GoogleAuthProvider());
+    } catch(e) {
+      alert('Innlogging feilet: ' + e.message);
+    }
+  };
+
+  window._fbSignOut = async () => {
+    await signOut(auth);
+  };
+
+  // ── Synkroniser data med Firestore ──
+  async function lagreTilSky(userId) {
+    try {
+      await setDoc(doc(db, 'brukere', userId), {
+        aktiviteter: JSON.parse(localStorage.getItem('lp_a') || '[]'),
+        oppgaver:    JSON.parse(localStorage.getItem('lp_o') || '[]'),
+        todos:       JSON.parse(localStorage.getItem('lp_t') || '[]'),
+        kategorier:  JSON.parse(localStorage.getItem('lp_k') || 'null') || [],
+        filterAkt:   JSON.parse(localStorage.getItem('lp_fa') || '{}'),
+        filterOpp:   JSON.parse(localStorage.getItem('lp_fo') || '{}'),
+        oppdatert:   new Date().toISOString()
+      });
+    } catch(e) {
+      console.warn('Sky-lagring feilet:', e);
+    }
+  }
+
+  window._lagreTilSky = lagreTilSky;
+
+  // ── Auth-tilstand ──
+  onAuthStateChanged(auth, async bruker => {
+    const loginOverlay = document.getElementById('loginOverlay');
+    const brukerInfo   = document.getElementById('brukerInfo');
+    const brukerNavn   = document.getElementById('brukerNavn');
+
+    if (bruker) {
+      // Logget inn
+      loginOverlay.style.display = 'none';
+      brukerNavn.textContent = bruker.displayName || bruker.email;
+      brukerInfo.style.display = 'flex';
+      window._currentUid = bruker.uid;
+
+      // Hent data fra Firestore
+      const snap = await getDoc(doc(db, 'brukere', bruker.uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        localStorage.setItem('lp_a', JSON.stringify(data.aktiviteter || []));
+        localStorage.setItem('lp_o', JSON.stringify(data.oppgaver    || []));
+        localStorage.setItem('lp_t', JSON.stringify(data.todos       || []));
+        if (data.kategorier?.length) localStorage.setItem('lp_k', JSON.stringify(data.kategorier));
+        if (data.filterAkt) localStorage.setItem('lp_fa', JSON.stringify(data.filterAkt));
+        if (data.filterOpp) localStorage.setItem('lp_fo', JSON.stringify(data.filterOpp));
+      }
+
+      // Last inn appen med sky-data
+      if (typeof hent === 'function') hent();
+      if (typeof ryddFullforte === 'function') ryddFullforte();
+      if (typeof oppdaterAktivPanel === 'function') oppdaterAktivPanel();
+      if (typeof oppdaterForfaltBadge === 'function') oppdaterForfaltBadge();
+
+      // Vis varsel-banner nå som bruker er logget inn
+      if ('Notification' in window && Notification.permission === 'default') {
+        const avvist = localStorage.getItem('varsel_avvist');
+        if (!avvist) document.getElementById('varselBanner').style.display = 'flex';
+      }
+
+      // Lytt på endringer fra andre enheter – hopp over første snapshot (allerede lastet via getDoc)
+      let firstSnapshot = true;
+      window._unsub = onSnapshot(doc(db, 'brukere', bruker.uid), snap => {
+        if (firstSnapshot) { firstSnapshot = false; return; }
+        if (!snap.exists()) return;
+        const data = snap.data();
+        const nyA = JSON.stringify(data.aktiviteter || []);
+        const nyO = JSON.stringify(data.oppgaver    || []);
+        const nyT = JSON.stringify(data.todos       || []);
+        const nyK = JSON.stringify(data.kategorier  || []);
+        const nyFA = JSON.stringify(data.filterAkt  || {});
+        const nyFO = JSON.stringify(data.filterOpp  || {});
+        if (nyA !== localStorage.getItem('lp_a') || nyO !== localStorage.getItem('lp_o') ||
+            nyT !== localStorage.getItem('lp_t') || nyK !== localStorage.getItem('lp_k') ||
+            nyFA !== localStorage.getItem('lp_fa') || nyFO !== localStorage.getItem('lp_fo')) {
+          localStorage.setItem('lp_a', nyA);
+          localStorage.setItem('lp_o', nyO);
+          localStorage.setItem('lp_t', nyT);
+          if (data.kategorier?.length) localStorage.setItem('lp_k', nyK);
+          if (data.filterAkt) localStorage.setItem('lp_fa', nyFA);
+          if (data.filterOpp) localStorage.setItem('lp_fo', nyFO);
+          if (typeof hent === 'function') hent();
+          if (typeof ryddFullforte === 'function') ryddFullforte();
+          if (typeof oppdaterAktivPanel === 'function') oppdaterAktivPanel();
+          if (typeof oppdaterForfaltBadge === 'function') oppdaterForfaltBadge();        }
+      });
+
+    } else {
+      // Ikke logget inn
+      if (window._unsub) window._unsub();
+      loginOverlay.style.display = 'flex';
+      brukerInfo.style.display = 'none';
+      window._currentUid = null;
+    }
+  });
+</script>
+</body>
+</html>
