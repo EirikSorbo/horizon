@@ -2625,8 +2625,12 @@
       const navnInput = document.createElement('input');
       navnInput.className = 'kat-navn-input';
       navnInput.value = k.label;
-      navnInput.onchange = () => {
+      navnInput.oninput = () => {
+        if (navnInput.value) k.label = navnInput.value;
+      };
+      navnInput.onblur = () => {
         k.label = navnInput.value.trim() || k.label;
+        navnInput.value = k.label;
         lagre(); oppdaterAktivPanel();
       };
 
@@ -2683,6 +2687,12 @@
   }
 
   function leggTilKategori() {
+    // Flush eventuelle navn som ikke har fått blur ennå
+    document.querySelectorAll('#kategoriModalBody .kat-navn-input').forEach(inp => {
+      const id = inp.closest('[data-id]')?.dataset.id;
+      const k = id && kategorier.find(k => k.id === id);
+      if (k && inp.value.trim()) k.label = inp.value.trim();
+    });
     const nyFarge = KAT_FARGER[kategorier.length % KAT_FARGER.length];
     const nyId = uid();
     kategorier.push({ id: nyId, label: 'Ny kategori', farge: nyFarge });
