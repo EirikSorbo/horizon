@@ -1257,6 +1257,43 @@
     }
     .tidslinje-milepel:hover::after { opacity: 1; }
     .tidslinje-milepel.fullfort { opacity: 0.4; }
+    .tidslinje-frist-linje {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 0;
+      border-left: 2px dashed #7C3AED;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .tidslinje-frist-merke {
+      position: absolute;
+      top: 0;
+      transform: translateX(-50%);
+      background: #7C3AED;
+      color: white;
+      font-family: 'Syne', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      z-index: 3;
+      white-space: nowrap;
+    }
+    .deadline-badge {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1.5px solid;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+      cursor: default;
+      flex-shrink: 0;
+    }
     .tidslinje-idag-linje {
       position: absolute;
       top: 0; bottom: 0;
@@ -1539,6 +1576,7 @@
       </div>
       Horizon Proposal
     </div>
+    <div id="deadlineBadge" class="deadline-badge"></div>
     <div class="header-handlinger">
       <button class="header-knapp" onclick="åpneKategoriModal()" title="Innstillinger">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -1677,6 +1715,21 @@
     <div class="modal-header">
       <div class="modal-tittel">Innstillinger</div>
       <button class="lukk-knapp" onclick="lukkModal('kategoriModal')">×</button>
+    </div>
+    <div style="padding:14px 22px 12px;border-bottom:1px solid var(--kant);">
+      <div style="font-size:10px;font-weight:700;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:0.8px;color:var(--tekst-sek);margin-bottom:8px;">Hoved-deadline</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="date" id="hovedDeadlineInput"
+          style="flex:1;border:1.5px solid var(--kant);border-radius:var(--rs);padding:9px 11px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--tekst);background:var(--bg);outline:none;transition:border-color .15s;"
+          oninput="settHovedDeadline(this.value)"
+          onfocus="this.style.borderColor='var(--grønn)'"
+          onblur="this.style.borderColor='var(--kant)'" />
+        <button onclick="settHovedDeadline('')"
+          style="padding:9px 12px;border:1.5px solid var(--kant);border-radius:var(--rs);background:var(--hvit);color:var(--tekst-sek);font-size:13px;cursor:pointer;transition:all .15s;flex-shrink:0;"
+          title="Fjern deadline"
+          onmouseover="this.style.borderColor='#f5b8b8';this.style.color='#c0392b'"
+          onmouseout="this.style.borderColor='var(--kant)';this.style.color='var(--tekst-sek)'">✕</button>
+      </div>
     </div>
     <div style="padding:14px 22px 12px;border-bottom:1px solid var(--kant);">
       <div style="font-size:10px;font-weight:700;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:0.8px;color:var(--tekst-sek);margin-bottom:8px;">Hovedfilter</div>
@@ -2238,6 +2291,73 @@
   }
 
   /* ──────────────────────────────
+     HOVED-DEADLINE
+  ────────────────────────────── */
+  let hovedDeadline = null;
+
+  function lastHovedDeadline() {
+    const v = localStorage.getItem('lp_dl');
+    hovedDeadline = v || null;
+    const input = document.getElementById('hovedDeadlineInput');
+    if (input) input.value = hovedDeadline || '';
+    oppdaterDeadlineUI();
+  }
+
+  function settHovedDeadline(dato) {
+    hovedDeadline = dato || null;
+    localStorage.setItem('lp_dl', hovedDeadline || '');
+    const input = document.getElementById('hovedDeadlineInput');
+    if (input) input.value = hovedDeadline || '';
+    oppdaterDeadlineUI();
+    if (kalVisning === 'tidslinje') renderTidslinje();
+    if (window._currentUid && window._lagreTilSky) window._lagreTilSky(window._currentUid);
+  }
+
+  function beregnDagerIgjen() {
+    if (!hovedDeadline) return null;
+    const iDag = new Date(); iDag.setHours(0,0,0,0);
+    const dl = new Date(hovedDeadline + 'T00:00:00');
+    return Math.round((dl - iDag) / 86400000);
+  }
+
+  function oppdaterDeadlineUI() {
+    const badge = document.getElementById('deadlineBadge');
+    if (!badge) return;
+    const diff = beregnDagerIgjen();
+    if (diff === null) {
+      badge.style.display = 'none';
+      return;
+    }
+    badge.style.display = 'flex';
+    if (diff > 14) {
+      badge.style.background = 'var(--grønn-lys)';
+      badge.style.color = 'var(--grønn)';
+      badge.style.borderColor = 'var(--grønn-mid)';
+      badge.textContent = diff + ' dager igjen';
+    } else if (diff > 3) {
+      badge.style.background = '#FEF9E7';
+      badge.style.color = '#C17D00';
+      badge.style.borderColor = '#F0D080';
+      badge.textContent = diff + ' dager igjen';
+    } else if (diff > 0) {
+      badge.style.background = '#fdeaea';
+      badge.style.color = '#c0392b';
+      badge.style.borderColor = '#f5b8b8';
+      badge.textContent = diff + ' dag' + (diff === 1 ? '' : 'er') + ' igjen';
+    } else if (diff === 0) {
+      badge.style.background = '#fdeaea';
+      badge.style.color = '#c0392b';
+      badge.style.borderColor = '#f5b8b8';
+      badge.textContent = '⚠ Frist i dag!';
+    } else {
+      badge.style.background = '#fdeaea';
+      badge.style.color = '#c0392b';
+      badge.style.borderColor = '#f5b8b8';
+      badge.textContent = Math.abs(diff) + ' dager over';
+    }
+  }
+
+  /* ──────────────────────────────
      FANER
   ────────────────────────────── */
   function byttFane(id, el) {
@@ -2464,6 +2584,27 @@
       rad.appendChild(kolonne);
       grid.appendChild(rad);
     });
+
+    // Hoved-deadline-strek
+    if (hovedDeadline) {
+      const dlDato = new Date(hovedDeadline + 'T00:00:00');
+      if (dlDato >= start && dlDato < slutt) {
+        const dlOffset = Math.round((dlDato - start) / 86400000) * pxPerDag + 90;
+        const dlLinje = document.createElement('div');
+        dlLinje.className = 'tidslinje-frist-linje';
+        dlLinje.style.left = dlOffset + 'px';
+        dlLinje.style.top = '30px';
+        grid.appendChild(dlLinje);
+
+        const dlMerke = document.createElement('div');
+        dlMerke.className = 'tidslinje-frist-merke';
+        dlMerke.style.left = dlOffset + 'px';
+        dlMerke.style.top = '6px';
+        const diff = beregnDagerIgjen();
+        dlMerke.textContent = diff === 0 ? 'FRIST I DAG' : diff > 0 ? 'FRIST' : 'FRIST (' + Math.abs(diff) + 'd over)';
+        grid.appendChild(dlMerke);
+      }
+    }
 
     // Auto-scroll til "i dag"
     const wrap = grid.parentElement;
@@ -4969,7 +5110,8 @@
 
   function nullstillAlleData() {
     if (!confirm('Er du sikker?\n\nDette sletter ALL data permanent — aktiviteter, oppgaver, to-do og kategorier.\n\nDette kan ikke angres.')) return;
-    ['lp_a','lp_o','lp_t','lp_k','lp_fa','lp_fo','varsel_avvist'].forEach(k => localStorage.removeItem(k));
+    ['lp_a','lp_o','lp_t','lp_k','lp_fa','lp_fo','varsel_avvist','lp_dl'].forEach(k => localStorage.removeItem(k));
+    settHovedDeadline('');
     if (window._currentUid && window._slettSkyData) window._slettSkyData(window._currentUid);
     aktiviteter = []; oppgaver = []; todos = []; kategorier = [...STANDARD_KATEGORIER];
     aktivitetFilterState = {}; oppgaveFilterState = {};
@@ -4993,6 +5135,7 @@
   function init() {
     hent();
     lastHovedFilter();
+    lastHovedDeadline();
     ryddFullforte();
     renderTodos();
     renderTidslinje();
@@ -5060,6 +5203,7 @@
         kategorier:  JSON.parse(localStorage.getItem('lp_k') || 'null') || [],
         filterAkt:   JSON.parse(localStorage.getItem('lp_fa') || '{}'),
         filterOpp:   JSON.parse(localStorage.getItem('lp_fo') || '{}'),
+        deadline:    localStorage.getItem('lp_dl') || '',
         oppdatert:   new Date().toISOString()
       });
     } catch(e) {
@@ -5100,11 +5244,13 @@
         if (data.kategorier?.length) localStorage.setItem('lp_k', JSON.stringify(data.kategorier));
         if (data.filterAkt) localStorage.setItem('lp_fa', JSON.stringify(data.filterAkt));
         if (data.filterOpp) localStorage.setItem('lp_fo', JSON.stringify(data.filterOpp));
+        if (data.deadline !== undefined) localStorage.setItem('lp_dl', data.deadline || '');
       }
 
       // Last inn appen med sky-data
       if (typeof hent === 'function') hent();
       if (typeof lastHovedFilter === 'function') lastHovedFilter();
+      if (typeof lastHovedDeadline === 'function') lastHovedDeadline();
       if (typeof ryddFullforte === 'function') ryddFullforte();
       if (typeof oppdaterAktivPanel === 'function') oppdaterAktivPanel();
       if (typeof oppdaterForfaltBadge === 'function') oppdaterForfaltBadge();
@@ -5138,6 +5284,7 @@
           if (data.filterOpp) localStorage.setItem('lp_fo', nyFO);
           if (typeof hent === 'function') hent();
       if (typeof lastHovedFilter === 'function') lastHovedFilter();
+      if (typeof lastHovedDeadline === 'function') lastHovedDeadline();
           if (typeof ryddFullforte === 'function') ryddFullforte();
           if (typeof oppdaterAktivPanel === 'function') oppdaterAktivPanel();
           if (typeof oppdaterForfaltBadge === 'function') oppdaterForfaltBadge();        }
