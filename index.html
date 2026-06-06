@@ -1663,13 +1663,7 @@
       </div>
       <div id="valgtDagListe"></div>
     </div>
-    <div id="brukerInfo" style="display:none;justify-content:space-between;align-items:center;padding:10px 4px 0;">
-      <button onclick="åpneKategoriModal()" class="knapp-sek" style="font-size:11px;padding:5px 10px;">Rediger kategorier</button>
-      <div style="display:flex;align-items:center;gap:6px;">
-        <span id="brukerNavn" style="font-size:11px;font-family:'Nunito',sans-serif;color:var(--tekst-sek);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px;"></span>
-        <button class="header-knapp" onclick="window._fbSignOut()" title="Logg ut" style="font-size:14px;">⏏</button>
-      </div>
-    </div>
+    <div id="brukerInfo" style="display:none;"></div>
   </div>
 
   <!-- Aktiviteter / liste -->
@@ -1759,6 +1753,18 @@
       <button id="angreImportKnapp" onclick="angreImport()" style="display:none;width:100%;margin-top:8px;font-size:12px;" class="knapp-sek">↩ Angre siste import</button>
       <button onclick="lukkModal('kategoriModal');åpneRapportVelger()" style="width:100%;margin-top:8px;font-size:12px;background:var(--grønn);color:white;border:none;border-radius:var(--rs);padding:11px 14px;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;letter-spacing:0.3px;">📊 Rapport</button>
       <button onclick="nullstillAlleData()" style="width:100%;margin-top:8px;font-size:12px;background:none;color:#c0392b;border:1px solid #f0cece;border-radius:var(--rs);padding:9px 14px;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;" onmouseover="this.style.background='#fdf2f2'" onmouseout="this.style.background='none'">🗑 Nullstill alle data</button>
+    </div>
+    <div style="padding:14px 22px 12px;border-top:1px solid var(--kant);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+      <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+        <div style="width:30px;height:30px;border-radius:50%;background:var(--grønn-lys);border:1.5px solid var(--grønn-mid);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grønn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <span id="brukerNavnInnst" style="font-size:12px;font-family:'Nunito',sans-serif;font-weight:600;color:var(--tekst-sek);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+      </div>
+      <button onclick="window._fbSignOut()" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border:1.5px solid var(--kant);border-radius:var(--rs);background:var(--hvit);font-family:'Syne',sans-serif;font-weight:700;font-size:11px;color:var(--tekst-sek);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;" onmouseover="this.style.borderColor='#f5b8b8';this.style.color='#c0392b'" onmouseout="this.style.borderColor='var(--kant)';this.style.color='var(--tekst-sek)'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logg ut
+      </button>
     </div>
     <div class="modal-footer" style="justify-content:flex-end;align-items:center;">
       <span style="font-size:11px;color:var(--kant);font-family:'Syne',sans-serif;letter-spacing:0.5px;margin-right:auto;">v.1.79</span>
@@ -5224,14 +5230,13 @@
   // ── Auth-tilstand ──
   onAuthStateChanged(auth, async bruker => {
     const loginOverlay = document.getElementById('loginOverlay');
-    const brukerInfo   = document.getElementById('brukerInfo');
-    const brukerNavn   = document.getElementById('brukerNavn');
+    const brukerInfo = document.getElementById('brukerInfo');
 
     if (bruker) {
       // Logget inn
       loginOverlay.style.display = 'none';
-      brukerNavn.textContent = bruker.displayName || bruker.email;
-      brukerInfo.style.display = 'flex';
+      const brukerNavnInnst = document.getElementById('brukerNavnInnst');
+      if (brukerNavnInnst) brukerNavnInnst.textContent = bruker.displayName || bruker.email;
       window._currentUid = bruker.uid;
 
       // Hent data fra Firestore
@@ -5294,7 +5299,7 @@
       // Ikke logget inn
       if (window._unsub) window._unsub();
       loginOverlay.style.display = 'flex';
-      brukerInfo.style.display = 'none';
+      if (brukerInfo) brukerInfo.style.display = 'none';
       window._currentUid = null;
     }
   });
