@@ -1552,14 +1552,14 @@
 <nav class="faner">
   <div class="app-bredde faner-inner">
     <button class="fane aktiv" onclick="byttFane('todo', this)">To do</button>
-    <button class="fane" onclick="byttFane('oppgaver', this)">Milepæler</button>
+    <button class="fane" onclick="byttFane('oppgaver', this)">Oppgaver</button>
     <button class="fane" onclick="byttFane('liste', this)">Aktiviteter</button>
     <button class="fane" onclick="byttFane('kalender', this)">Oversikt</button>
   </div>
 </nav>
 
 <div id="varselBanner" style="display:none;background:var(--grønn-lys);border-bottom:1px solid var(--grønn-mid);padding:10px 16px;display:none;align-items:center;justify-content:space-between;gap:10px;">
-  <span style="font-size:12px;color:var(--tekst);font-family:'Nunito',sans-serif;">🔔 Tillat varsler for å se forfalte milepæler på ikonet</span>
+  <span style="font-size:12px;color:var(--tekst);font-family:'Nunito',sans-serif;">🔔 Tillat varsler for å se forfalte oppgaver på ikonet</span>
   <div style="display:flex;gap:8px;flex-shrink:0;">
     <button onclick="avvisVarsel()" style="background:none;border:1px solid var(--grønn-mid);border-radius:6px;padding:5px 10px;font-size:11px;font-family:'Syne',sans-serif;font-weight:700;color:var(--tekst-sek);cursor:pointer;">Ikke nå</button>
     <button onclick="be0mVarsel()" style="background:var(--grønn);border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-family:'Syne',sans-serif;font-weight:700;color:white;cursor:pointer;">Tillat</button>
@@ -1573,7 +1573,7 @@
     <div class="todo-hurtigknapper">
       <button class="todo-hurtig-knapp" onclick="åpneTodoModal()">+ To do</button>
       <button class="todo-hurtig-knapp" onclick="åpneAktivitetModal()">+ Aktivitet</button>
-      <button class="todo-hurtig-knapp" onclick="åpneOppgaveModal()">+ Milepæl</button>
+      <button class="todo-hurtig-knapp" onclick="åpneOppgaveModal()">+ Oppgave</button>
     </div>
     <div class="kat-oversikt-rad" id="katOversiktRad"></div>
     <div class="kort-container" id="todoListe"></div>
@@ -1644,11 +1644,11 @@
     <div class="kort-container" id="aktivitetListe"></div>
   </div>
 
-  <!-- Milepæler -->
+  <!-- Oppgaver -->
   <div id="panel-oppgaver" class="panel">
     <div class="seksjon-header">
-      <div class="seksjon-tittel">Milepæler</div>
-      <button class="legg-til-knapp" onclick="åpneOppgaveModal()">+ Legg til milepæl</button>
+      <div class="seksjon-tittel">Oppgaver</div>
+      <button class="legg-til-knapp" onclick="åpneOppgaveModal()">+ Legg til oppgave</button>
     </div>
     <div class="filter-rad" id="filterRad"></div>
     <div class="kort-container" id="oppgaveListe"></div>
@@ -1809,7 +1809,7 @@
         <textarea id="todoFeltBesk" style="min-height:64px;"></textarea>
       </div>
       <div class="felt">
-        <label>Koble til milepæl</label>
+        <label>Koble til oppgave</label>
         <select id="todoFeltOppgave">
           <option value="">— Ingen —</option>
         </select>
@@ -1867,7 +1867,7 @@
       <button class="knapp-sek" onclick="lukkModal('aktivitetInfoModal')">Lukk</button>
       <div class="knapp-gruppe" style="align-items:center;">
         <button class="knapp-sek" id="infoModalLeggTilTodoKnapp">+ To do</button>
-        <button class="knapp-sek" id="infoModalLeggTilOppgaveKnapp">+ Milepæl</button>
+        <button class="knapp-sek" id="infoModalLeggTilOppgaveKnapp">+ Oppgave</button>
         <button class="info-ikon-knapp" id="infoModalRedigKnapp" title="Rediger">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
@@ -1930,11 +1930,11 @@
   </div>
 </div>
 
-<!-- Modal: Milepæl -->
+<!-- Modal: Oppgave -->
 <div class="modal-overlay" id="oppgaveModal">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-tittel" id="oppgaveModalTittel">Ny milepæl</div>
+      <div class="modal-tittel" id="oppgaveModalTittel">Ny oppgave</div>
       <button class="lukk-knapp" onclick="lukkModal('oppgaveModal')">×</button>
     </div>
     <div class="modal-body">
@@ -2372,7 +2372,7 @@
     if (grupperKats.length === 0) {
       const tom = document.createElement('div');
       tom.style.cssText = 'padding:32px;text-align:center;color:var(--tekst-sek);font-size:13px;';
-      tom.textContent = 'Legg til kategorier og milepæler for å se tidslinjen.';
+      tom.textContent = 'Legg til kategorier og oppgaver for å se tidslinjen.';
       grid.appendChild(tom);
       return;
     }
@@ -2388,7 +2388,7 @@
         return d2 >= start && d1 < slutt;
       });
 
-      // Milepæler (oppgaver med frist) i vinduet
+      // Oppgaver (oppgaver med frist) i vinduet
       const katOpp = oppgaver.filter(o => {
         if (!o.frist) return false;
         const akt = o.aktivitetId ? aktiviteter.find(a => a.id === o.aktivitetId) : null;
@@ -2439,7 +2439,7 @@
         kolonne.appendChild(aktivitetSpor);
       }
 
-      // Nedre spor: milepæler (diamanter)
+      // Nedre spor: oppgaver (diamanter)
       if (katOpp.length > 0) {
         const milepelSpor = document.createElement('div');
         milepelSpor.className = 'tidslinje-spor milepel-spor';
@@ -2647,7 +2647,7 @@
         const p = document.createElement('div');
         p.className = 'prikk';
         p.style.background = 'var(--grønn)';
-        p.title = dagOpp.length + ' milepæl(er) med frist';
+        p.title = dagOpp.length + ' oppgave(r) med frist';
         rad.appendChild(p);
       }
       celle.appendChild(rad);
@@ -2705,12 +2705,12 @@
       dagAkt.forEach(a => listEl.appendChild(lagAktivitetKort(a, true)));
     }
 
-    listEl.appendChild(lagDagSeksjon('Milepæler', () => åpneOppgaveModal()));
+    listEl.appendChild(lagDagSeksjon('Oppgaver', () => åpneOppgaveModal()));
     if (dagOpp.length === 0) {
       const tom = document.createElement('div');
       tom.className = 'tom-melding';
       tom.style.cssText = 'padding:14px 20px;font-size:13px;';
-      tom.textContent = 'Ingen milepæler.';
+      tom.textContent = 'Ingen oppgaver.';
       listEl.appendChild(tom);
     } else {
       dagOpp.forEach(o => {
@@ -2988,7 +2988,7 @@
       seksjon.className = 'kat-oversikt-seksjon';
       const tittel = document.createElement('div');
       tittel.className = 'kat-oversikt-seksjon-tittel';
-      tittel.textContent = 'Øvrige milepæler';
+      tittel.textContent = 'Øvrige oppgaver';
       seksjon.appendChild(tittel);
       frittstOpp.forEach(o => {
         const oppEl = document.createElement('div');
@@ -3304,7 +3304,7 @@
     }
     if (t.oppgaveId) {
       const opp = oppgaver.find(o => o.id === t.oppgaveId);
-      if (opp) html += `<div style="font-size:11px;font-weight:700;font-family:'Syne',sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Tilknyttet milepæl</div>
+      if (opp) html += `<div style="font-size:11px;font-weight:700;font-family:'Syne',sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Tilknyttet oppgave</div>
         <div style="padding:10px 12px;background:var(--grønn-lys);border-radius:var(--rs);font-size:13px;color:var(--tekst);cursor:pointer;" onclick="lukkModal('todoInfoModal');åpneOppgaveInfo('${opp.id}')">${opp.beskrivelse}</div>`;
     }
     if (t.kategoriId) {
@@ -3606,7 +3606,7 @@
         const ob = document.createElement('span');
         ob.className = 'oppgave-badge badge-' + a.type;
         ob.textContent = '!';
-        ob.title = antallUferdige + ' milepæl(er) knyttet til denne aktiviteten';
+        ob.title = antallUferdige + ' oppgave(r) knyttet til denne aktiviteten';
         ob.onclick = e => {
           e.stopPropagation();
           åpneAktivitetInfo(a.id);
@@ -3619,7 +3619,7 @@
     const leggTilOppgaveKnapp = document.createElement('button');
     leggTilOppgaveKnapp.className = 'ikon-knapp';
     leggTilOppgaveKnapp.textContent = '+';
-    leggTilOppgaveKnapp.title = 'Legg til milepæl';
+    leggTilOppgaveKnapp.title = 'Legg til oppgave';
     leggTilOppgaveKnapp.style.cssText = `font-size:18px;font-weight:400;color:${getKat(a.type)?.farge || 'var(--tekst-sek)'};line-height:1;`;    leggTilOppgaveKnapp.onclick = e => {
       e.stopPropagation();
       åpneOppgaveModal(null, a.id);
@@ -3711,7 +3711,7 @@
 
     if (filtrert.length === 0) {
       container.innerHTML =
-        '<div class="tom-melding">Ingen milepæler her ennå.</div>';
+        '<div class="tom-melding">Ingen oppgaver her ennå.</div>';
       return;
     }
 
@@ -3901,7 +3901,7 @@
       åpneOppgaveModal(id);
     };
     document.getElementById('oppInfoSlettKnapp').onclick = () => {
-      if (!confirm('Slett denne milepælen?')) return;
+      if (!confirm('Slett denne oppgaven?')) return;
       todos.forEach(t => { if (t.oppgaveId === id) t.oppgaveId = null; });
       oppgaver = oppgaver.filter(x => x.id !== id);
       lagre(); lukkModal('oppgaveInfoModal'); renderOppgaver(); renderTodos();
@@ -3963,7 +3963,7 @@
     if (tilknyttede.length > 0) {
       const header = document.createElement('div');
       header.style.cssText = 'margin-top:18px;font-size:11px;font-weight:700;font-family:"Syne",sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;';
-      header.textContent = `Milepæler (${tilknyttede.length})`;
+      header.textContent = `Oppgaver (${tilknyttede.length})`;
       body.appendChild(header);
 
       tilknyttede.forEach(o => {
@@ -4012,7 +4012,7 @@
     } else {
       const tom = document.createElement('div');
       tom.style.cssText = 'margin-top:18px;font-size:13px;color:var(--tekst-sek);';
-      tom.textContent = 'Ingen milepæler knyttet til denne aktiviteten.';
+      tom.textContent = 'Ingen oppgaver knyttet til denne aktiviteten.';
       body.appendChild(tom);
     }
 
@@ -4195,7 +4195,7 @@
 
     if (id) {
       const o = oppgaver.find(o => o.id === id);
-      document.getElementById('oppgaveModalTittel').textContent = 'Rediger milepæl';
+      document.getElementById('oppgaveModalTittel').textContent = 'Rediger oppgave';
       document.getElementById('oppFeltBesk').value  = o.beskrivelse;
       document.getElementById('oppFeltNotat').value = o.notat || '';
       select.value = o.aktivitetId || '';
@@ -4215,7 +4215,7 @@
       }
       slettKnapp.style.display = 'block';
     } else {
-      document.getElementById('oppgaveModalTittel').textContent = 'Ny milepæl';
+      document.getElementById('oppgaveModalTittel').textContent = 'Ny oppgave';
       document.getElementById('oppFeltBesk').value  = '';
       document.getElementById('oppFeltNotat').value = '';
       select.value = preAktivitetId || '';
@@ -4264,7 +4264,7 @@
   }
 
   function slettOppgave() {
-    if (!confirm('Slett denne milepælen?')) return;
+    if (!confirm('Slett denne oppgaven?')) return;
     todos.forEach(t => { if (t.oppgaveId === redigOppgaveId) t.oppgaveId = null; });
     oppgaver = oppgaver.filter(o => o.id !== redigOppgaveId);
     lagre();
@@ -4384,7 +4384,7 @@
           alert('Filen ser ikke ut til å være en gyldig Horizon Proposal-eksport.'); return;
         }
         const bekreft = confirm(
-          'Dette vil erstatte alle eksisterende aktiviteter og milepæler med dataene fra filen.\n\nFortsette?'
+          'Dette vil erstatte alle eksisterende aktiviteter og oppgaver med dataene fra filen.\n\nFortsette?'
         );
         if (!bekreft) return;
         taSnapshot();
@@ -4433,7 +4433,7 @@
 
         lagre();
         oppdaterAktivPanel();
-        alert(`✓ Slått sammen: ${nyeAkt.length} nye aktiviteter og ${nyeOpp.length} nye milepæler lagt til.`);
+        alert(`✓ Slått sammen: ${nyeAkt.length} nye aktiviteter og ${nyeOpp.length} nye oppgaver lagt til.`);
       } catch {
         alert('Kunne ikke lese filen. Sjekk at det er en gyldig .json-fil.');
       }
@@ -4520,7 +4520,7 @@
     // Fullført forrige uke
     const fullfortForrige = [
       ...oppgaver.filter(o => oppI(o) && o.fullfort && o.fullfortDato && iPeriode(o.fullfortDato, forrigeMandag, forrigeSondag))
-        .map(o => ({ type: 'milepæl', tittel: o.beskrivelse, dato: o.fullfortDato, obj: o })),
+        .map(o => ({ type: 'oppgave', tittel: o.beskrivelse, dato: o.fullfortDato, obj: o })),
       ...todos.filter(t => todoI(t) && t.fullfort && t.fullfortDato && iPeriode(t.fullfortDato, forrigeMandag, forrigeSondag))
         .map(t => ({ type: 'to do', tittel: t.tittel, dato: t.fullfortDato, obj: t }))
     ].sort((a,b) => a.dato.localeCompare(b.dato));
@@ -4612,7 +4612,7 @@
     // Forfalt — alarm-seksjon
     if (data.forfalt.length > 0) {
       html += `<div class="rapport-seksjon">
-        <div class="rapport-seksjon-tittel" style="color:#c0392b;border-bottom-color:#c0392b;">⚠ Forfalte milepæler</div>`;
+        <div class="rapport-seksjon-tittel" style="color:#c0392b;border-bottom-color:#c0392b;">⚠ Forfalte oppgaver</div>`;
       data.forfalt.forEach(o => {
         const kat = getKat(o.kategoriId) || getKat(aktiviteter.find(a => a.id === o.aktivitetId)?.type);
         const diff = Math.round((data.iDag - new Date(o.frist + 'T00:00:00')) / 86400000);
@@ -4712,7 +4712,7 @@
       const fullfortIPer = [
         ...oppgaver.filter(o => o.fullfort && o.fullfortDato && o.fullfortDato >= rapportEgFra && o.fullfortDato <= rapportEgTil)
           .filter(o => !katFilter || o.kategoriId === katFilter || (o.aktivitetId && aktiviteter.find(a => a.id === o.aktivitetId)?.type === katFilter))
-          .map(o => ({ type: 'milepæl', tittel: o.beskrivelse, dato: o.fullfortDato, obj: o })),
+          .map(o => ({ type: 'oppgave', tittel: o.beskrivelse, dato: o.fullfortDato, obj: o })),
         ...todos.filter(t => t.fullfort && t.fullfortDato && t.fullfortDato >= rapportEgFra && t.fullfortDato <= rapportEgTil)
           .filter(t => !katFilter || t.kategoriId === katFilter)
           .map(t => ({ type: 'to do', tittel: t.tittel, dato: t.fullfortDato, obj: t }))
@@ -4772,7 +4772,7 @@
     md += `| Forfalt | ${data.forfalt.length} |\n\n`;
 
     if (data.forfalt.length > 0) {
-      md += `## ⚠ Forfalte milepæler\n\n`;
+      md += `## ⚠ Forfalte oppgaver\n\n`;
       data.forfalt.forEach(o => {
         const diff = Math.round((data.iDag - new Date(o.frist + 'T00:00:00')) / 86400000);
         md += `- **${o.beskrivelse}** — ${diff} dag${diff===1?'':'er'} over fristen (${fmtDatoFra(o.frist)})\n`;
@@ -4824,7 +4824,7 @@
       const fullfortIPer = [
         ...oppgaver.filter(o => o.fullfort && o.fullfortDato && o.fullfortDato >= customStart && o.fullfortDato <= customSlutt)
           .filter(o => !katFilter || o.kategoriId === katFilter || (o.aktivitetId && aktiviteter.find(a => a.id === o.aktivitetId)?.type === katFilter))
-          .map(o => ({ type: 'milepæl', tittel: o.beskrivelse, dato: o.fullfortDato })),
+          .map(o => ({ type: 'oppgave', tittel: o.beskrivelse, dato: o.fullfortDato })),
         ...todos.filter(t => t.fullfort && t.fullfortDato && t.fullfortDato >= customStart && t.fullfortDato <= customSlutt)
           .filter(t => !katFilter || t.kategoriId === katFilter)
           .map(t => ({ type: 'to do', tittel: t.tittel, dato: t.fullfortDato }))
@@ -4957,7 +4957,7 @@
           const akt = o.aktivitetId ? aktiviteter.find(a => a.id === o.aktivitetId) : null;
           return (akt?.type || o.kategoriId) === k.id;
         }).length;
-        lagValg(k.label, `${stats} milepæl${stats === 1 ? '' : 'er'}`, k.farge, () => åpneRapport(k.id));
+        lagValg(k.label, `${stats} oppgave${stats === 1 ? '' : 'r'}`, k.farge, () => åpneRapport(k.id));
       });
     }
 
@@ -4968,7 +4968,7 @@
   }
 
   function nullstillAlleData() {
-    if (!confirm('Er du sikker?\n\nDette sletter ALL data permanent — aktiviteter, milepæler, to-do og kategorier.\n\nDette kan ikke angres.')) return;
+    if (!confirm('Er du sikker?\n\nDette sletter ALL data permanent — aktiviteter, oppgaver, to-do og kategorier.\n\nDette kan ikke angres.')) return;
     ['lp_a','lp_o','lp_t','lp_k','lp_fa','lp_fo','varsel_avvist'].forEach(k => localStorage.removeItem(k));
     if (window._currentUid && window._slettSkyData) window._slettSkyData(window._currentUid);
     aktiviteter = []; oppgaver = []; todos = []; kategorier = [...STANDARD_KATEGORIER];
