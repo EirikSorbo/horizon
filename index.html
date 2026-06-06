@@ -1145,8 +1145,8 @@
     .tidslinje-kat-rad {
       position: relative;
       border-bottom: 1px solid var(--kant);
-      min-height: 38px;
-      padding: 6px 0;
+      display: flex;
+      align-items: stretch;
     }
     .tidslinje-kat-rad:last-child { border-bottom: none; }
     .tidslinje-kat-label {
@@ -1161,18 +1161,27 @@
       z-index: 1;
       border-right: 1px solid var(--kant);
       width: 90px;
+      min-width: 90px;
       box-sizing: border-box;
-      float: left;
-      height: 100%;
       display: flex;
       align-items: center;
       text-transform: uppercase;
       letter-spacing: 0.3px;
     }
+    .tidslinje-spor-kolonne {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
     .tidslinje-spor {
       position: relative;
-      margin-left: 90px;
       height: 28px;
+    }
+    .tidslinje-spor.milepel-spor {
+      height: 26px;
+      border-top: 1px solid var(--kant);
+      background: rgba(0,0,0,0.015);
     }
     .tidslinje-bar {
       position: absolute;
@@ -1197,7 +1206,7 @@
       position: absolute;
       width: 14px;
       height: 14px;
-      top: 7px;
+      top: 6px;
       transform: rotate(45deg);
       cursor: pointer;
       box-shadow: 0 1px 3px rgba(0,0,0,0.15);
@@ -2326,7 +2335,30 @@
       return;
     }
 
+    const fmtDs = d => d.toISOString().slice(0, 10);
+
     grupperKats.forEach(k => {
+      // Aktiviteter i vinduet for denne kategorien
+      const katAkt = aktiviteter.filter(a => {
+        if (k.id === null ? !!a.type : a.type !== k.id) return false;
+        const d1 = new Date(a.dato + 'T00:00:00');
+        const d2 = new Date((a.datoTil || a.dato) + 'T00:00:00');
+        return d2 >= start && d1 < slutt;
+      });
+
+      // Milepæler (oppgaver med frist) i vinduet
+      const katOpp = oppgaver.filter(o => {
+        if (!o.frist) return false;
+        const akt = o.aktivitetId ? aktiviteter.find(a => a.id === o.aktivitetId) : null;
+        const t = akt?.type || o.kategoriId || null;
+        if (k.id === null ? !!t : t !== k.id) return false;
+        const d = new Date(o.frist + 'T00:00:00');
+        return d >= start && d < slutt;
+      });
+
+      // Hopp over tomme kategorier
+      if (katAkt.length === 0 && katOpp.length === 0) return;
+
       const rad = document.createElement('div');
       rad.className = 'tidslinje-kat-rad';
 
@@ -2337,50 +2369,57 @@
       label.style.borderLeft = `3px solid ${k.farge}`;
       rad.appendChild(label);
 
-      const spor = document.createElement('div');
-      spor.className = 'tidslinje-spor';
-      spor.style.width = (totalDager * pxPerDag) + 'px';
+      // ── Spor-kolonne (to spor stablet vertikalt) ──
+      const kolonne = document.createElement('div');
+      kolonne.className = 'tidslinje-spor-kolonne';
 
-      // Aktiviteter i denne kategorien
-      const katAkt = aktiviteter.filter(a => (k.id === null ? !a.type : a.type === k.id));
-      katAkt.forEach(a => {
-        const d1 = new Date(a.dato + 'T00:00:00');
-        const d2 = new Date((a.datoTil || a.dato) + 'T00:00:00');
-        if (d2 < start || d1 >= slutt) return;
-        const offsetDager = Math.max(0, Math.round((d1 - start) / 86400000));
-        const sluttDager  = Math.min(totalDager, Math.round((d2 - start) / 86400000) + 1);
-        const bar = document.createElement('div');
-        bar.className = 'tidslinje-bar';
-        bar.style.left = (offsetDager * pxPerDag) + 'px';
-        bar.style.width = Math.max(8, (sluttDager - offsetDager) * pxPerDag) + 'px';
-        bar.style.background = k.farge;
-        bar.textContent = a.tittel;
-        bar.title = a.tittel;
-        bar.onclick = () => åpneAktivitetInfo(a.id);
-        spor.appendChild(bar);
-      });
+      // Øverste spor: aktiviteter (barer)
+      if (katAkt.length > 0) {
+        const aktivitetSpor = document.createElement('div');
+        aktivitetSpor.className = 'tidslinje-spor';
+        aktivitetSpor.style.width = (totalDager * pxPerDag) + 'px';
 
-      // Milepæler (oppgaver) i denne kategorien
-      const katOpp = oppgaver.filter(o => {
-        if (!o.frist) return false;
-        const akt = o.aktivitetId ? aktiviteter.find(a => a.id === o.aktivitetId) : null;
-        const t = akt?.type || o.kategoriId || null;
-        return k.id === null ? !t : t === k.id;
-      });
-      katOpp.forEach(o => {
-        const d = new Date(o.frist + 'T00:00:00');
-        if (d < start || d >= slutt) return;
-        const offsetDager = Math.round((d - start) / 86400000);
-        const mp = document.createElement('div');
-        mp.className = 'tidslinje-milepel' + (o.fullfort ? ' fullfort' : '');
-        mp.style.left = (offsetDager * pxPerDag) + 'px';
-        mp.style.background = k.farge;
-        mp.title = o.beskrivelse + (o.fullfort ? ' (fullført)' : '');
-        mp.onclick = () => åpneOppgaveInfo(o.id);
-        spor.appendChild(mp);
-      });
+        katAkt.forEach(a => {
+          const d1 = new Date(a.dato + 'T00:00:00');
+          const d2 = new Date((a.datoTil || a.dato) + 'T00:00:00');
+          const offsetDager = Math.max(0, Math.round((d1 - start) / 86400000));
+          const sluttDager  = Math.min(totalDager, Math.round((d2 - start) / 86400000) + 1);
+          const bar = document.createElement('div');
+          bar.className = 'tidslinje-bar';
+          bar.style.left = (offsetDager * pxPerDag) + 'px';
+          bar.style.width = Math.max(8, (sluttDager - offsetDager) * pxPerDag) + 'px';
+          bar.style.background = k.farge;
+          bar.textContent = a.tittel;
+          bar.title = a.tittel;
+          bar.onclick = () => åpneAktivitetInfo(a.id);
+          aktivitetSpor.appendChild(bar);
+        });
 
-      rad.appendChild(spor);
+        kolonne.appendChild(aktivitetSpor);
+      }
+
+      // Nedre spor: milepæler (diamanter)
+      if (katOpp.length > 0) {
+        const milepelSpor = document.createElement('div');
+        milepelSpor.className = 'tidslinje-spor milepel-spor';
+        milepelSpor.style.width = (totalDager * pxPerDag) + 'px';
+
+        katOpp.forEach(o => {
+          const d = new Date(o.frist + 'T00:00:00');
+          const offsetDager = Math.round((d - start) / 86400000);
+          const mp = document.createElement('div');
+          mp.className = 'tidslinje-milepel' + (o.fullfort ? ' fullfort' : '');
+          mp.style.left = (offsetDager * pxPerDag) + 'px';
+          mp.style.background = k.farge;
+          mp.title = o.beskrivelse + (o.fullfort ? ' (fullført)' : '');
+          mp.onclick = () => åpneOppgaveInfo(o.id);
+          milepelSpor.appendChild(mp);
+        });
+
+        kolonne.appendChild(milepelSpor);
+      }
+
+      rad.appendChild(kolonne);
       grid.appendChild(rad);
     });
 
