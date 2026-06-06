@@ -75,14 +75,31 @@
     header {
       background: var(--hvit);
       border-bottom: 1px solid var(--kant);
-      padding: 0 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       height: 58px;
       position: sticky;
       top: 0;
       z-index: 100;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+      padding: 0 12px;
+    }
+
+    /* Felles wrapper for å holde topp-radene like brede som main */
+    .app-bredde {
+      max-width: 480px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    @media (min-width: 700px) {
+      .app-bredde { max-width: 1100px; }
+      .header-inner { padding: 0 24px; }
+    }
+    @media (min-width: 1280px) {
+      .app-bredde { max-width: 1280px; }
     }
 
     .header-handlinger {
@@ -141,14 +158,19 @@
 
     /* ── Tabs ── */
     .faner {
-      display: flex;
-      justify-content: center;
       background: var(--hvit);
       border-bottom: 1px solid var(--kant);
       padding: 0;
       position: sticky;
       top: 58px;
       z-index: 99;
+    }
+    .faner-inner {
+      display: flex;
+      justify-content: center;
+    }
+    @media (min-width: 700px) {
+      .faner-inner { padding: 0 24px; }
     }
 
     .fane {
@@ -1460,30 +1482,30 @@
 </div>
 
 <header>
-  <div class="logo">
-    <div class="logo-ikon" style="background:var(--grønn);width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:white;line-height:1;">H</span>
+  <div class="app-bredde header-inner">
+    <div class="logo">
+      <div class="logo-ikon" style="background:var(--grønn);width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:white;line-height:1;">H</span>
+      </div>
+      Horizon Proposal
     </div>
-    Horizon Proposal
-  </div>
-  <div class="header-handlinger">
-    <button class="header-knapp" id="hovedFilterKnapp" onclick="åpneHovedFilter()" title="Filtrer på kategori" style="position:relative;padding:0 10px;width:auto;min-width:36px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;gap:6px;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-      <span id="hovedFilterTekst" style="display:none;"></span>
-    </button>
-    <button class="header-knapp" onclick="åpneKategoriModal()" title="Rediger kategorier">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-    </button>
-    <input type="file" id="importInput" accept=".json" style="display:none" onchange="importerData(this)"/>
-    <input type="file" id="mergeInput"  accept=".json" style="display:none" onchange="mergeData(this)"/>
+    <div class="header-handlinger">
+      <button class="header-knapp" onclick="åpneKategoriModal()" title="Innstillinger">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <input type="file" id="importInput" accept=".json" style="display:none" onchange="importerData(this)"/>
+      <input type="file" id="mergeInput"  accept=".json" style="display:none" onchange="mergeData(this)"/>
+    </div>
   </div>
 </header>
 
 <nav class="faner">
-  <button class="fane aktiv" onclick="byttFane('todo', this)">To do</button>
-  <button class="fane" onclick="byttFane('oppgaver', this)">Milepæler</button>
-  <button class="fane" onclick="byttFane('liste', this)">Aktiviteter</button>
-  <button class="fane" onclick="byttFane('kalender', this)">Oversikt</button>
+  <div class="app-bredde faner-inner">
+    <button class="fane aktiv" onclick="byttFane('todo', this)">To do</button>
+    <button class="fane" onclick="byttFane('oppgaver', this)">Milepæler</button>
+    <button class="fane" onclick="byttFane('liste', this)">Aktiviteter</button>
+    <button class="fane" onclick="byttFane('kalender', this)">Oversikt</button>
+  </div>
 </nav>
 
 <div id="varselBanner" style="display:none;background:var(--grønn-lys);border-bottom:1px solid var(--grønn-mid);padding:10px 16px;display:none;align-items:center;justify-content:space-between;gap:10px;">
@@ -1606,7 +1628,18 @@
       <div class="modal-tittel">Innstillinger</div>
       <button class="lukk-knapp" onclick="lukkModal('kategoriModal')">×</button>
     </div>
-    <div style="padding:12px 22px 4px;">
+    <div style="padding:14px 22px 12px;border-bottom:1px solid var(--kant);">
+      <div style="font-size:10px;font-weight:700;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:0.8px;color:var(--tekst-sek);margin-bottom:8px;">Hovedfilter</div>
+      <button id="settHovedFilterKnapp" onclick="lukkModal('kategoriModal');åpneHovedFilter()" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--kant);border-radius:var(--rs);background:var(--hvit);cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:all .15s;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--tekst-sek);"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <div style="flex:1;">
+          <div style="font-size:11px;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;font-weight:700;font-family:'Syne',sans-serif;">Aktivt filter</div>
+          <div id="hovedFilterStatus" style="font-size:13px;font-weight:700;color:var(--tekst);margin-top:2px;">Vis alle kategorier</div>
+        </div>
+        <div style="color:var(--tekst-sek);font-size:16px;">›</div>
+      </button>
+    </div>
+    <div style="padding:14px 22px 4px;">
       <div style="font-size:10px;font-weight:700;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:0.8px;color:var(--tekst-sek);">Kategorier</div>
     </div>
     <div class="modal-body" id="kategoriModalBody" style="padding-top:8px;"></div>
@@ -2007,23 +2040,33 @@
   }
 
   function oppdaterHovedFilterUI() {
-    const knapp = document.getElementById('hovedFilterKnapp');
-    const tekst = document.getElementById('hovedFilterTekst');
-    if (!knapp) return;
     const kat = hovedFilter ? getKat(hovedFilter) : null;
-    if (kat) {
-      knapp.style.background = kat.farge + '18';
-      knapp.style.borderColor = kat.farge;
-      knapp.style.color = kat.farge;
-      tekst.style.display = 'inline';
-      tekst.textContent = kat.label;
-      tekst.style.textTransform = 'uppercase';
-      tekst.style.letterSpacing = '0.3px';
-    } else {
-      knapp.style.background = 'var(--hvit)';
-      knapp.style.borderColor = 'var(--kant)';
-      knapp.style.color = 'var(--tekst-sek)';
-      tekst.style.display = 'none';
+    const status = document.getElementById('hovedFilterStatus');
+    if (status) {
+      if (kat) {
+        status.textContent = kat.label;
+        status.style.color = kat.farge;
+      } else {
+        status.textContent = 'Vis alle kategorier';
+        status.style.color = 'var(--tekst)';
+      }
+    }
+    // Synlig indikator i header — liten prikk på innstillinger-knappen
+    const innstKnapp = document.querySelector('header .header-knapp');
+    if (innstKnapp) {
+      let dot = innstKnapp.querySelector('.filter-prikk');
+      if (kat) {
+        if (!dot) {
+          dot = document.createElement('span');
+          dot.className = 'filter-prikk';
+          dot.style.cssText = 'position:absolute;top:-2px;right:-2px;width:10px;height:10px;border-radius:50%;border:2px solid var(--hvit);';
+          innstKnapp.style.position = 'relative';
+          innstKnapp.appendChild(dot);
+        }
+        dot.style.background = kat.farge;
+      } else if (dot) {
+        dot.remove();
+      }
     }
   }
 
@@ -3225,6 +3268,7 @@
 
   function åpneKategoriModal() {
     renderKategoriModal();
+    oppdaterHovedFilterUI();
     document.getElementById('kategoriModal').classList.add('vis');
   }
 
