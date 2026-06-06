@@ -94,12 +94,19 @@
       margin: 0 auto;
       width: 100%;
     }
+    /* Responsive widths — consolidated */
     @media (min-width: 700px) {
-      .app-bredde { max-width: 1100px; }
-      .header-inner { padding: 0 24px; }
+      /* Tablet (iPad): all rows same width, no inner panel narrowing */
+      .app-bredde  { max-width: 900px; }
+      .header-inner { padding: 0 20px; }
     }
-    @media (min-width: 1280px) {
-      .app-bredde { max-width: 1280px; }
+    @media (min-width: 1100px) {
+      /* Desktop: wider */
+      .app-bredde  { max-width: 1200px; }
+      .header-inner { padding: 0 32px; }
+    }
+    @media (min-width: 1400px) {
+      .app-bredde  { max-width: 1400px; }
     }
 
     .header-handlinger {
@@ -169,9 +176,8 @@
       display: flex;
       justify-content: center;
     }
-    @media (min-width: 700px) {
-      .faner-inner { padding: 0 24px; }
-    }
+    @media (min-width: 700px) { .faner-inner { padding: 0 20px; } }
+    @media (min-width: 1100px) { .faner-inner { padding: 0 32px; } }
 
     .fane {
       flex: 1;
@@ -202,14 +208,17 @@
       padding: 20px 12px 64px;
     }
 
-    /* Bredere layout på tablet/desktop */
     @media (min-width: 700px) {
-      main { max-width: 1100px; padding: 24px 24px 80px; }
-      /* Hold andre paneler smale for lesbarhet — kun oversikt utnytter full bredde */
-      #panel-todo, #panel-liste, #panel-oppgaver { max-width: 720px; margin: 0 auto; }
+      /* Tablet: main matches app-bredde exactly */
+      main { max-width: 900px; padding: 24px 20px 80px; }
     }
-    @media (min-width: 1280px) {
-      main { max-width: 1280px; }
+    @media (min-width: 1100px) {
+      /* Desktop: wider, non-overview panels capped for readability */
+      main { max-width: 1200px; padding: 28px 32px 80px; }
+      #panel-todo, #panel-liste, #panel-oppgaver { max-width: 740px; margin: 0 auto; }
+    }
+    @media (min-width: 1400px) {
+      main { max-width: 1400px; }
     }
 
     .panel { display: none; }
@@ -1281,18 +1290,13 @@
     }
     .deadline-badge {
       display: none;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      border: 1.5px solid;
       font-family: 'Syne', sans-serif;
       font-weight: 700;
       font-size: 11px;
       white-space: nowrap;
       letter-spacing: 0.2px;
-      cursor: default;
       flex-shrink: 0;
+      margin-right: 4px;
     }
     .tidslinje-idag-linje {
       position: absolute;
@@ -1576,8 +1580,8 @@
       </div>
       Horizon Proposal
     </div>
-    <div id="deadlineBadge" class="deadline-badge"></div>
     <div class="header-handlinger">
+      <div id="deadlineBadge" class="deadline-badge"></div>
       <button class="header-knapp" onclick="åpneKategoriModal()" title="Innstillinger">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </button>
@@ -2336,29 +2340,19 @@
     }
     badge.style.display = 'flex';
     if (diff > 14) {
-      badge.style.background = 'var(--grønn-lys)';
-      badge.style.color = 'var(--grønn)';
-      badge.style.borderColor = 'var(--grønn-mid)';
+      badge.style.color = 'var(--tekst-sek)';
       badge.textContent = diff + ' dager igjen';
     } else if (diff > 3) {
-      badge.style.background = '#FEF9E7';
       badge.style.color = '#C17D00';
-      badge.style.borderColor = '#F0D080';
       badge.textContent = diff + ' dager igjen';
     } else if (diff > 0) {
-      badge.style.background = '#fdeaea';
       badge.style.color = '#c0392b';
-      badge.style.borderColor = '#f5b8b8';
       badge.textContent = diff + ' dag' + (diff === 1 ? '' : 'er') + ' igjen';
     } else if (diff === 0) {
-      badge.style.background = '#fdeaea';
       badge.style.color = '#c0392b';
-      badge.style.borderColor = '#f5b8b8';
-      badge.textContent = '⚠ Frist i dag!';
+      badge.textContent = 'Frist i dag!';
     } else {
-      badge.style.background = '#fdeaea';
       badge.style.color = '#c0392b';
-      badge.style.borderColor = '#f5b8b8';
       badge.textContent = Math.abs(diff) + ' dager over';
     }
   }
