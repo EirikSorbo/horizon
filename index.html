@@ -1715,21 +1715,6 @@
       <button class="lukk-knapp" onclick="lukkModal('kategoriModal')">×</button>
     </div>
     <div style="padding:14px 22px 12px;border-bottom:1px solid var(--kant);">
-      <div style="font-size:10px;font-weight:700;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:0.8px;color:var(--tekst-sek);margin-bottom:8px;">Hoved-deadline</div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input type="date" id="hovedDeadlineInput"
-          style="flex:1;border:1.5px solid var(--kant);border-radius:var(--rs);padding:9px 11px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--tekst);background:var(--bg);outline:none;transition:border-color .15s;"
-          oninput="settHovedDeadline(this.value)"
-          onfocus="this.style.borderColor='var(--grønn)'"
-          onblur="this.style.borderColor='var(--kant)'" />
-        <button onclick="settHovedDeadline('')"
-          style="padding:9px 12px;border:1.5px solid var(--kant);border-radius:var(--rs);background:var(--hvit);color:var(--tekst-sek);font-size:13px;cursor:pointer;transition:all .15s;flex-shrink:0;"
-          title="Fjern deadline"
-          onmouseover="this.style.borderColor='#f5b8b8';this.style.color='#c0392b'"
-          onmouseout="this.style.borderColor='var(--kant)';this.style.color='var(--tekst-sek)'">✕</button>
-      </div>
-    </div>
-    <div style="padding:14px 22px 12px;border-bottom:1px solid var(--kant);">
       <div style="font-size:10px;font-weight:700;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:0.8px;color:var(--tekst-sek);margin-bottom:8px;">Hovedfilter</div>
       <button id="settHovedFilterKnapp" onclick="lukkModal('kategoriModal');åpneHovedFilter()" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--kant);border-radius:var(--rs);background:var(--hvit);cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:all .15s;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--tekst-sek);"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
@@ -1746,6 +1731,21 @@
     <div class="modal-body" id="kategoriModalBody" style="padding-top:8px;"></div>
     <div style="padding:10px 22px 16px;border-bottom:1px solid var(--kant);">
       <button class="knapp-primær" onclick="leggTilKategori()" style="width:100%;">+ Legg til kategori</button>
+    </div>
+    <div style="padding:14px 22px 12px;border-bottom:1px solid var(--kant);">
+      <div style="font-size:10px;font-weight:700;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:0.8px;color:var(--tekst-sek);margin-bottom:8px;">Hoved-deadline</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="date" id="hovedDeadlineInput"
+          style="flex:1;border:1.5px solid var(--kant);border-radius:var(--rs);padding:9px 11px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--tekst);background:var(--bg);outline:none;transition:border-color .15s;"
+          oninput="settHovedDeadline(this.value)"
+          onfocus="this.style.borderColor='var(--grønn)'"
+          onblur="this.style.borderColor='var(--kant)'" />
+        <button onclick="settHovedDeadline('')"
+          style="padding:9px 12px;border:1.5px solid var(--kant);border-radius:var(--rs);background:var(--hvit);color:var(--tekst-sek);font-size:13px;cursor:pointer;transition:all .15s;flex-shrink:0;"
+          title="Fjern deadline"
+          onmouseover="this.style.borderColor='#f5b8b8';this.style.color='#c0392b'"
+          onmouseout="this.style.borderColor='var(--kant)';this.style.color='var(--tekst-sek)'">✕</button>
+      </div>
     </div>
     <div style="padding:16px 22px 8px;">
       <div style="font-size:10px;font-weight:700;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:0.8px;color:var(--tekst-sek);margin-bottom:10px;">Data</div>
