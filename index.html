@@ -1214,7 +1214,7 @@
       margin-left: 4px;
     }
 
-    /* ── Ukentlig oppsummering ── */
+    /* ── Rapport ── */
     .rapport-modal { max-width: 720px !important; }
     .rapport-body {
       padding: 24px 28px;
@@ -1467,6 +1467,10 @@
     Horizon Proposal
   </div>
   <div class="header-handlinger">
+    <button class="header-knapp" id="hovedFilterKnapp" onclick="åpneHovedFilter()" title="Filtrer på kategori" style="position:relative;padding:0 10px;width:auto;min-width:36px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;gap:6px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      <span id="hovedFilterTekst" style="display:none;"></span>
+    </button>
     <button class="header-knapp" onclick="åpneKategoriModal()" title="Rediger kategorier">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -1617,7 +1621,7 @@
         <button class="knapp-sek" onclick="document.getElementById('mergeInput').click()" style="flex:1;font-size:12px;">⇅ Slå sammen</button>
       </div>
       <button id="angreImportKnapp" onclick="angreImport()" style="display:none;width:100%;margin-top:8px;font-size:12px;" class="knapp-sek">↩ Angre siste import</button>
-      <button onclick="lukkModal('kategoriModal');åpneRapportVelger()" style="width:100%;margin-top:8px;font-size:12px;background:var(--grønn);color:white;border:none;border-radius:var(--rs);padding:11px 14px;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;letter-spacing:0.3px;">📊 Ukentlig oppsummering</button>
+      <button onclick="lukkModal('kategoriModal');åpneRapportVelger()" style="width:100%;margin-top:8px;font-size:12px;background:var(--grønn);color:white;border:none;border-radius:var(--rs);padding:11px 14px;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;letter-spacing:0.3px;">📊 Rapport</button>
       <button onclick="nullstillAlleData()" style="width:100%;margin-top:8px;font-size:12px;background:none;color:#c0392b;border:1px solid #f0cece;border-radius:var(--rs);padding:9px 14px;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;" onmouseover="this.style.background='#fdf2f2'" onmouseout="this.style.background='none'">🗑 Nullstill alle data</button>
     </div>
     <div class="modal-footer" style="justify-content:flex-end;align-items:center;">
@@ -1627,11 +1631,25 @@
   </div>
 </div>
 
+<!-- Modal: Hovedfilter -->
+<div class="modal-overlay" id="hovedFilterModal">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-header">
+      <div class="modal-tittel">Filtrer hele appen</div>
+      <button class="lukk-knapp" onclick="lukkModal('hovedFilterModal')">×</button>
+    </div>
+    <div class="modal-body" id="hovedFilterBody" style="padding:18px 22px;display:flex;flex-direction:column;gap:8px;"></div>
+    <div class="modal-footer" style="justify-content:flex-end;">
+      <button class="knapp-sek" onclick="lukkModal('hovedFilterModal')">Lukk</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Rapport-velger -->
 <div class="modal-overlay" id="rapportVelgerModal">
   <div class="modal" style="max-width:380px;">
     <div class="modal-header">
-      <div class="modal-tittel">Velg rapport</div>
+      <div class="modal-tittel">Lag rapport</div>
       <button class="lukk-knapp" onclick="lukkModal('rapportVelgerModal')">×</button>
     </div>
     <div class="modal-body" id="rapportVelgerBody" style="gap:8px;"></div>
@@ -1641,11 +1659,11 @@
   </div>
 </div>
 
-<!-- Modal: Ukentlig oppsummering -->
+<!-- Modal: Rapport -->
 <div class="modal-overlay" id="rapportModal">
   <div class="modal rapport-modal">
     <div class="modal-header">
-      <div class="modal-tittel">Ukentlig oppsummering</div>
+      <div class="modal-tittel">Rapport</div>
       <button class="lukk-knapp" onclick="lukkModal('rapportModal')">×</button>
     </div>
     <div class="rapport-body" id="rapportBody"></div>
@@ -1971,6 +1989,112 @@
   const UKEDAGER = ['søndag','mandag','tirsdag','onsdag','torsdag','fredag','lørdag'];
   const UKEDAGER_K = ['søn','man','tir','ons','tor','fre','lør'];
 
+  /* ── Hovedfilter (gjelder hele appen) ── */
+  let hovedFilter = null; // kategori-id eller null
+
+  function lastHovedFilter() {
+    const v = localStorage.getItem('lp_hf');
+    hovedFilter = v && v !== 'null' ? v : null;
+    if (hovedFilter && !kategorier.find(k => k.id === hovedFilter)) hovedFilter = null;
+    oppdaterHovedFilterUI();
+  }
+
+  function settHovedFilter(id) {
+    hovedFilter = id || null;
+    localStorage.setItem('lp_hf', hovedFilter || '');
+    oppdaterHovedFilterUI();
+    oppdaterAktivPanel();
+  }
+
+  function oppdaterHovedFilterUI() {
+    const knapp = document.getElementById('hovedFilterKnapp');
+    const tekst = document.getElementById('hovedFilterTekst');
+    if (!knapp) return;
+    const kat = hovedFilter ? getKat(hovedFilter) : null;
+    if (kat) {
+      knapp.style.background = kat.farge + '18';
+      knapp.style.borderColor = kat.farge;
+      knapp.style.color = kat.farge;
+      tekst.style.display = 'inline';
+      tekst.textContent = kat.label;
+      tekst.style.textTransform = 'uppercase';
+      tekst.style.letterSpacing = '0.3px';
+    } else {
+      knapp.style.background = 'var(--hvit)';
+      knapp.style.borderColor = 'var(--kant)';
+      knapp.style.color = 'var(--tekst-sek)';
+      tekst.style.display = 'none';
+    }
+  }
+
+  function åpneHovedFilter() {
+    const body = document.getElementById('hovedFilterBody');
+    body.innerHTML = '';
+
+    const lagValg = (label, sub, farge, valgtId) => {
+      const erValgt = (valgtId || null) === (hovedFilter || null);
+      const btn = document.createElement('button');
+      btn.style.cssText = `display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid ${erValgt ? farge : 'var(--kant)'};border-radius:var(--rs);background:${erValgt ? farge + '14' : 'var(--hvit)'};cursor:pointer;text-align:left;transition:all .15s;font-family:'Nunito',sans-serif;`;
+      btn.onmouseover = () => { if (!erValgt) { btn.style.borderColor = farge; btn.style.background = farge + '0e'; } };
+      btn.onmouseout  = () => { if (!erValgt) { btn.style.borderColor = 'var(--kant)'; btn.style.background = 'var(--hvit)'; } };
+      btn.onclick = () => { settHovedFilter(valgtId); lukkModal('hovedFilterModal'); };
+
+      const dot = document.createElement('div');
+      dot.style.cssText = `width:12px;height:12px;border-radius:50%;background:${farge};flex-shrink:0;`;
+      btn.appendChild(dot);
+
+      const txt = document.createElement('div');
+      txt.style.flex = '1';
+      txt.innerHTML = `<div style="font-weight:700;font-size:13px;color:var(--tekst);">${label}</div>
+        ${sub ? `<div style="font-size:11px;color:var(--tekst-sek);margin-top:1px;">${sub}</div>` : ''}`;
+      btn.appendChild(txt);
+
+      if (erValgt) {
+        const sjekk = document.createElement('div');
+        sjekk.style.cssText = `color:${farge};font-weight:700;font-size:16px;`;
+        sjekk.textContent = '✓';
+        btn.appendChild(sjekk);
+      }
+
+      body.appendChild(btn);
+    };
+
+    lagValg('Vis alle kategorier', 'Ingen filter', 'var(--grønn)', null);
+    kategorier.forEach(k => lagValg(k.label, '', k.farge, k.id));
+
+    if (kategorier.length === 0) {
+      const tom = document.createElement('div');
+      tom.style.cssText = 'padding:12px;font-size:13px;color:var(--tekst-sek);text-align:center;';
+      tom.textContent = 'Du har ingen kategorier ennå. Legg til i Innstillinger.';
+      body.appendChild(tom);
+    }
+
+    document.getElementById('hovedFilterModal').classList.add('vis');
+  }
+
+  /* Hjelper: sjekker om et element tilhører hovedfilteret */
+  function ihovedFilter(item, type) {
+    if (!hovedFilter) return true;
+    if (type === 'aktivitet') return item.type === hovedFilter;
+    if (type === 'oppgave') {
+      if (item.kategoriId === hovedFilter) return true;
+      if (item.aktivitetId) {
+        const a = aktiviteter.find(a => a.id === item.aktivitetId);
+        if (a && a.type === hovedFilter) return true;
+      }
+      return false;
+    }
+    if (type === 'todo') {
+      if (item.kategoriId === hovedFilter) return true;
+      if (item.oppgaveId) {
+        const o = oppgaver.find(o => o.id === item.oppgaveId);
+        if (o) return ihovedFilter(o, 'oppgave');
+      }
+      return false;
+    }
+    return true;
+  }
+
   /* ──────────────────────────────
      LAGRING
   ────────────────────────────── */
@@ -2145,9 +2269,10 @@
     grid.appendChild(iDagMerke);
 
     // En rad per kategori + en rad for uten kategori
-    const grupperKats = [...kategorier];
+    let grupperKats = [...kategorier];
+    if (hovedFilter) grupperKats = grupperKats.filter(k => k.id === hovedFilter);
     const utenKat = { id: null, label: 'Ukategorisert', farge: '#999' };
-    const harUkategorisert = aktiviteter.some(a => !a.type) || oppgaver.some(o => !o.kategoriId && !o.aktivitetId);
+    const harUkategorisert = !hovedFilter && (aktiviteter.some(a => !a.type) || oppgaver.some(o => !o.kategoriId && !o.aktivitetId));
     if (harUkategorisert) grupperKats.push(utenKat);
 
     if (grupperKats.length === 0) {
@@ -2245,8 +2370,8 @@
       const erIDag = ds === iDag.toISOString().slice(0,10);
       const erValgt = ds === valgtDato;
 
-      const dagAkt = aktiviteter.filter(a => a.dato <= ds && (a.datoTil >= ds || a.dato === ds));
-      const dagOpp = oppgaver.filter(o => o.frist === ds && !o.fullfort);
+      const dagAkt = aktiviteter.filter(a => a.dato <= ds && (a.datoTil >= ds || a.dato === ds) && ihovedFilter(a, 'aktivitet'));
+      const dagOpp = oppgaver.filter(o => o.frist === ds && !o.fullfort && ihovedFilter(o, 'oppgave'));
 
       const dagEl = document.createElement('div');
       dagEl.className = 'uke-dag' + (erValgt ? ' valgt' : '');
@@ -2369,8 +2494,8 @@
 
   function lagCelle(dag, aar, mnd, annen, erIDag) {
     const ds = `${aar}-${String(mnd+1).padStart(2,'0')}-${String(dag).padStart(2,'0')}`;
-    const dagAkt = aktiviteter.filter(a => a.dato === ds);
-    const dagOpp = oppgaver.filter(o => o.frist === ds);
+    const dagAkt = aktiviteter.filter(a => a.dato === ds && ihovedFilter(a, 'aktivitet'));
+    const dagOpp = oppgaver.filter(o => o.frist === ds && ihovedFilter(o, 'oppgave'));
 
     const celle = document.createElement('div');
     celle.className = 'dag-celle'
@@ -2430,13 +2555,13 @@
       ' ' + d.getDate() + '. ' + MAANEDER[d.getMonth()];
 
     const dagAkt = aktiviteter
-      .filter(a => a.dato === ds)
+      .filter(a => a.dato === ds && ihovedFilter(a, 'aktivitet'))
       .sort((a, b) => (a.tid || '').localeCompare(b.tid || ''));
 
     // Oppgaver med frist denne dagen, ELLER koblet til en aktivitet denne dagen
     const aktIdsIDag = new Set(dagAkt.map(a => a.id));
     const dagOpp = oppgaver
-      .filter(o => !o.fullfort && (
+      .filter(o => !o.fullfort && ihovedFilter(o, 'oppgave') && (
         o.frist === ds ||
         (o.aktivitetId && aktIdsIDag.has(o.aktivitetId))
       ))
@@ -2561,8 +2686,10 @@
     const container = document.getElementById('aktivitetListe');
     const filterRad = document.getElementById('aktivitetFilterRad');
 
-    // Bygg filterknapper
+    // Bygg filterknapper — skjul pillsene når hovedfilter er aktivt
     filterRad.innerHTML = '';
+    if (hovedFilter) { filterRad.style.display = 'none'; }
+    else { filterRad.style.display = ''; }
     kategorier.forEach(k => {
       const pill = document.createElement('button');
       const state = aktivitetFilterState[k.id] || 1;
@@ -2581,12 +2708,14 @@
       filterRad.appendChild(pill);
     });
 
-    let filtrert = [...aktiviteter];
-    const harKun = katIds().some(k => aktivitetFilterState[k] === 2);
-    if (harKun) {
-      filtrert = filtrert.filter(a => aktivitetFilterState[a.type] === 2);
-    } else {
-      filtrert = filtrert.filter(a => aktivitetFilterState[a.type] !== 3);
+    let filtrert = aktiviteter.filter(a => ihovedFilter(a, 'aktivitet'));
+    if (!hovedFilter) {
+      const harKun = katIds().some(k => aktivitetFilterState[k] === 2);
+      if (harKun) {
+        filtrert = filtrert.filter(a => aktivitetFilterState[a.type] === 2);
+      } else {
+        filtrert = filtrert.filter(a => aktivitetFilterState[a.type] !== 3);
+      }
     }
 
     if (filtrert.length === 0) {
@@ -2630,6 +2759,9 @@
     const rad = document.getElementById('katOversiktRad');
     if (!rad) return;
     rad.innerHTML = '';
+    // Skjul rad helt hvis hovedfilter er aktivt — da har det ingen mening
+    if (hovedFilter) { rad.style.display = 'none'; return; }
+    rad.style.display = '';
     kategorier.forEach(k => {
       const btn = document.createElement('button');
       btn.className = 'kat-oversikt-knapp';
@@ -2783,21 +2915,22 @@
     const om30  = new Date(iDag); om30.setDate(om30.getDate() + 30);
 
     // Todos uten frist (aktive)
-    const utenFrist = todos.filter(t => !t.fullfort && !t.frist);
+    const utenFrist = todos.filter(t => !t.fullfort && !t.frist && ihovedFilter(t, 'todo'));
 
     // Todos med frist (aktive), sortert
-    const medFrist = todos.filter(t => !t.fullfort && t.frist)
+    const medFrist = todos.filter(t => !t.fullfort && t.frist && ihovedFilter(t, 'todo'))
       .sort((a,b) => a.frist.localeCompare(b.frist));
 
     // Oppgaver med frist innen 30 dager (ikke fullført)
     const oppgaverSnart = oppgaver.filter(o => {
       if (o.fullfort || !o.frist) return false;
+      if (!ihovedFilter(o, 'oppgave')) return false;
       const d = new Date(o.frist + 'T00:00:00');
       return d <= om30;
     }).sort((a,b) => a.frist.localeCompare(b.frist));
 
     // Fullførte todos
-    const fullforte = todos.filter(t => t.fullfort);
+    const fullforte = todos.filter(t => t.fullfort && ihovedFilter(t, 'todo'));
 
     const tomListe = utenFrist.length === 0 && medFrist.length === 0 &&
                      oppgaverSnart.length === 0 && fullforte.length === 0;
@@ -2938,7 +3071,7 @@
     });
 
     // 3. Fullførte (todos + oppgaver)
-    const fullforteOpp = oppgaver.filter(o => o.fullfort);
+    const fullforteOpp = oppgaver.filter(o => o.fullfort && ihovedFilter(o, 'oppgave'));
     if (fullforte.length > 0 || fullforteOpp.length > 0) {
       lagSeksjon('Fullført');
       fullforte.forEach(t => container.appendChild(lagTodoKort(t)));
@@ -3398,7 +3531,11 @@
       pill.textContent = '← ' + (akt ? akt.tittel : 'Aktivitet');
       pill.onclick = () => { aktivFilter = null; renderOppgaver(); };
       filterRad.appendChild(pill);
+    } else if (hovedFilter) {
+      // Skjul filter-pillsene når hovedfilter er aktivt
+      filterRad.style.display = 'none';
     } else {
+      filterRad.style.display = '';
       // Dynamiske kategori-filtere
       kategorier.forEach(k => {        const pill = document.createElement('button');
         const state = oppgaveFilterState[k.id] || 1;
@@ -3418,11 +3555,13 @@
       });
     }
 
-    let filtrert = [...oppgaver];
+    let filtrert = oppgaver.filter(o => ihovedFilter(o, 'oppgave'));
 
     if (aktivFilter && aktivFilter.startsWith('aktivitet:')) {
       const aktId = aktivFilter.slice(10);
       filtrert = filtrert.filter(o => o.aktivitetId === aktId && !o.fullfort);
+    } else if (hovedFilter) {
+      filtrert = filtrert.filter(o => !o.fullfort);
     } else {
       filtrert = filtrert.filter(o => !o.fullfort);
       const harKunOpp = katIds().some(k => oppgaveFilterState[k] === 2);
@@ -4176,24 +4315,57 @@
   /* ──────────────────────────────
      UKENTLIG OPPSUMMERING
   ────────────────────────────── */
-  function beregnRapportData(katFilter = null) {
+  function beregnPerioder(periode, customStart, customSlutt) {
     const iDag = new Date(); iDag.setHours(0,0,0,0);
-    const dagIUke = iDag.getDay() === 0 ? 6 : iDag.getDay() - 1; // 0=mandag
+    let forrigeStart, forrigeSlutt, denneStart, denneSlutt, nesteStart, nesteSlutt;
+    let enhetLabel = 'uke';
 
-    // Forrige uke = mandag i forrige uke til søndag i forrige uke
-    const forrigeMandag = new Date(iDag); forrigeMandag.setDate(iDag.getDate() - dagIUke - 7);
-    const forrigeSondag = new Date(forrigeMandag); forrigeSondag.setDate(forrigeMandag.getDate() + 6);
+    if (periode === 'maaned') {
+      enhetLabel = 'måned';
+      denneStart   = new Date(iDag.getFullYear(), iDag.getMonth(), 1);
+      denneSlutt   = new Date(iDag.getFullYear(), iDag.getMonth() + 1, 0);
+      forrigeStart = new Date(iDag.getFullYear(), iDag.getMonth() - 1, 1);
+      forrigeSlutt = new Date(iDag.getFullYear(), iDag.getMonth(), 0);
+      nesteStart   = new Date(iDag.getFullYear(), iDag.getMonth() + 1, 1);
+      nesteSlutt   = new Date(iDag.getFullYear(), iDag.getMonth() + 3, 0);
+    } else if (periode === 'kvartal') {
+      enhetLabel = 'kvartal';
+      const q = Math.floor(iDag.getMonth() / 3);
+      denneStart   = new Date(iDag.getFullYear(), q * 3, 1);
+      denneSlutt   = new Date(iDag.getFullYear(), q * 3 + 3, 0);
+      forrigeStart = new Date(iDag.getFullYear(), (q - 1) * 3, 1);
+      forrigeSlutt = new Date(iDag.getFullYear(), q * 3, 0);
+      nesteStart   = new Date(iDag.getFullYear(), (q + 1) * 3, 1);
+      nesteSlutt   = new Date(iDag.getFullYear(), (q + 3) * 3, 0);
+    } else if (periode === 'egendefinert') {
+      enhetLabel = 'periode';
+      denneStart   = new Date(customStart + 'T00:00:00');
+      denneSlutt   = new Date(customSlutt  + 'T00:00:00');
+      // For egendefinert finnes ingen forrige/neste — settes til null
+      forrigeStart = forrigeSlutt = nesteStart = nesteSlutt = null;
+    } else {
+      // uke (standard)
+      const dagIUke = iDag.getDay() === 0 ? 6 : iDag.getDay() - 1;
+      denneStart   = new Date(iDag); denneStart.setDate(iDag.getDate() - dagIUke);
+      denneSlutt   = new Date(denneStart); denneSlutt.setDate(denneStart.getDate() + 6);
+      forrigeStart = new Date(denneStart); forrigeStart.setDate(denneStart.getDate() - 7);
+      forrigeSlutt = new Date(denneStart); forrigeSlutt.setDate(denneStart.getDate() - 1);
+      nesteStart   = new Date(denneSlutt); nesteStart.setDate(denneSlutt.getDate() + 1);
+      nesteSlutt   = new Date(nesteStart); nesteSlutt.setDate(nesteStart.getDate() + 13);
+    }
+    return { iDag, forrigeStart, forrigeSlutt, denneStart, denneSlutt, nesteStart, nesteSlutt, enhetLabel, periode };
+  }
 
-    // Denne uken
-    const denneMandag = new Date(iDag); denneMandag.setDate(iDag.getDate() - dagIUke);
-    const denneSondag = new Date(denneMandag); denneSondag.setDate(denneMandag.getDate() + 6);
-
-    // Neste 2 uker = mandag neste uke til søndag uken etter
-    const nesteMandag = new Date(denneMandag); nesteMandag.setDate(denneMandag.getDate() + 7);
-    const nesteSluttSondag = new Date(nesteMandag); nesteSluttSondag.setDate(nesteMandag.getDate() + 13);
+  function beregnRapportData(katFilter = null, periode = 'uke', customStart = '', customSlutt = '') {
+    const p = beregnPerioder(periode, customStart, customSlutt);
+    const { iDag, forrigeStart, forrigeSlutt, denneStart, denneSlutt, nesteStart, nesteSlutt, enhetLabel } = p;
+    // Behold gamle aliasene for kompatibilitet med eksisterende kode under
+    const forrigeMandag = forrigeStart, forrigeSondag = forrigeSlutt;
+    const denneMandag   = denneStart,   denneSondag   = denneSlutt;
+    const nesteMandag   = nesteStart,   nesteSluttSondag = nesteSlutt;
 
     const fmt = d => d.toISOString().slice(0, 10);
-    const iPeriode = (datoStr, start, slutt) => datoStr >= fmt(start) && datoStr <= fmt(slutt);
+    const iPeriode = (datoStr, start, slutt) => start && slutt && datoStr >= fmt(start) && datoStr <= fmt(slutt);
 
     // Kategori-filter — sjekker om et element tilhører valgt kategori
     const aktI = a => !katFilter || a.type === katFilter;
@@ -4224,26 +4396,28 @@
         .map(t => ({ type: 'to do', tittel: t.tittel, dato: t.fullfortDato, obj: t }))
     ].sort((a,b) => a.dato.localeCompare(b.dato));
 
+    // Aktiviteter spenner over periode hvis det er overlapp
+    const spennerOver = (a, start, slutt) => start && slutt && (
+      iPeriode(a.dato, start, slutt) ||
+      (a.datoTil && a.datoTil >= fmt(start) && a.dato <= fmt(slutt))
+    );
+
     // Aktiviteter forrige uke
     const aktForrige = aktiviteter.filter(a => aktI(a) && (
       iPeriode(a.dato, forrigeMandag, forrigeSondag) ||
       (a.datoTil && iPeriode(a.datoTil, forrigeMandag, forrigeSondag))
     )).sort((a,b) => a.dato.localeCompare(b.dato));
 
-    // Denne uken — pågående aktiviteter og frister
-    const aktDenne = aktiviteter.filter(a => aktI(a) && (
-      iPeriode(a.dato, denneMandag, denneSondag) ||
-      (a.datoTil && a.datoTil >= fmt(denneMandag) && a.dato <= fmt(denneSondag))
-    )).sort((a,b) => a.dato.localeCompare(b.dato));
+    // Denne uken/perioden — pågående aktiviteter og frister
+    const aktDenne = aktiviteter.filter(a => aktI(a) && spennerOver(a, denneMandag, denneSondag))
+      .sort((a,b) => a.dato.localeCompare(b.dato));
 
     const fristerDenne = oppgaver.filter(o => oppI(o) && !o.fullfort && o.frist && iPeriode(o.frist, denneMandag, denneSondag))
       .sort((a,b) => a.frist.localeCompare(b.frist));
 
-    // Neste 2 uker
-    const aktNeste = aktiviteter.filter(a => aktI(a) && (
-      iPeriode(a.dato, nesteMandag, nesteSluttSondag) ||
-      (a.datoTil && a.datoTil >= fmt(nesteMandag) && a.dato <= fmt(nesteSluttSondag))
-    )).sort((a,b) => a.dato.localeCompare(b.dato));
+    // Neste 2 perioder
+    const aktNeste = aktiviteter.filter(a => aktI(a) && spennerOver(a, nesteMandag, nesteSluttSondag))
+      .sort((a,b) => a.dato.localeCompare(b.dato));
 
     const fristerNeste = oppgaver.filter(o => oppI(o) && !o.fullfort && o.frist && iPeriode(o.frist, nesteMandag, nesteSluttSondag))
       .sort((a,b) => a.frist.localeCompare(b.frist));
@@ -4255,7 +4429,8 @@
     return {
       iDag, forrigeMandag, forrigeSondag, denneMandag, denneSondag, nesteMandag, nesteSluttSondag,
       fullfortForrige, aktForrige, aktDenne, fristerDenne, aktNeste, fristerNeste, forfalt,
-      katFilter, kat: katFilter ? getKat(katFilter) : null
+      katFilter, kat: katFilter ? getKat(katFilter) : null,
+      periode, enhetLabel, erEgendefinert: periode === 'egendefinert'
     };
   }
 
@@ -4269,24 +4444,39 @@
 
   function åpneRapport(katFilter = null) {
     window._aktivRapportKatFilter = katFilter || null;
-    const data = beregnRapportData(katFilter);
+    window._aktivRapportPeriode = rapportValgtPeriode;
+    window._aktivRapportEgFra = rapportEgFra;
+    window._aktivRapportEgTil = rapportEgTil;
+
+    const data = beregnRapportData(katFilter, rapportValgtPeriode, rapportEgFra, rapportEgTil);
     const body = document.getElementById('rapportBody');
 
-    const fmtPer = (a, b) => `${fmtDato(a)} – ${fmtDato(b)}`;
+    const fmtPer = (a, b) => a && b ? `${fmtDato(a)} – ${fmtDato(b)}` : '';
     const tittel = data.kat
-      ? `Statusrapport — <span style="color:${data.kat.farge}">${data.kat.label}</span>`
-      : 'Statusrapport';
+      ? `Rapport — <span style="color:${data.kat.farge}">${data.kat.label}</span>`
+      : 'Rapport';
+
+    // Etikett for hvilken type periode
+    const denneLabel = data.erEgendefinert ? 'Perioden' :
+      (data.enhetLabel === 'måned' ? 'Denne måneden' :
+       data.enhetLabel === 'kvartal' ? 'Dette kvartalet' : 'Denne uken');
+    const forrigeLabel = data.erEgendefinert ? null :
+      (data.enhetLabel === 'måned' ? 'Forrige måned' :
+       data.enhetLabel === 'kvartal' ? 'Forrige kvartal' : 'Forrige uke');
+    const nesteLabel = data.erEgendefinert ? null :
+      (data.enhetLabel === 'måned' ? 'Neste 2 måneder' :
+       data.enhetLabel === 'kvartal' ? 'Neste 2 kvartal' : 'Neste 2 uker');
 
     document.querySelector('#rapportModal .modal-tittel').textContent =
-      data.kat ? `Rapport: ${data.kat.label}` : 'Ukentlig oppsummering';
+      data.kat ? `Rapport: ${data.kat.label}` : 'Rapport';
 
     let html = `<div class="rapport-tittel-stor">${tittel}</div>
-      <div class="rapport-undertittel">Denne uken: ${fmtPer(data.denneMandag, data.denneSondag)} · Generert ${fmtDato(data.iDag)} ${data.iDag.getFullYear()}</div>
+      <div class="rapport-undertittel">${denneLabel}: ${fmtPer(data.denneMandag, data.denneSondag)} · Generert ${fmtDato(data.iDag)} ${data.iDag.getFullYear()}</div>
 
       <div class="rapport-stat-rad">
-        <div class="rapport-stat"><div class="rapport-stat-tall">${data.fullfortForrige.length}</div><div class="rapport-stat-label">Fullført forrige uke</div></div>
-        <div class="rapport-stat"><div class="rapport-stat-tall">${data.fristerDenne.length}</div><div class="rapport-stat-label">Frister denne uken</div></div>
-        <div class="rapport-stat"><div class="rapport-stat-tall">${data.fristerNeste.length}</div><div class="rapport-stat-label">Frister neste 2 uker</div></div>
+        ${data.erEgendefinert ? '' : `<div class="rapport-stat"><div class="rapport-stat-tall">${data.fullfortForrige.length}</div><div class="rapport-stat-label">Fullført ${forrigeLabel.toLowerCase()}</div></div>`}
+        <div class="rapport-stat"><div class="rapport-stat-tall">${data.fristerDenne.length}</div><div class="rapport-stat-label">Frister ${denneLabel.toLowerCase()}</div></div>
+        ${data.erEgendefinert ? '' : `<div class="rapport-stat"><div class="rapport-stat-tall">${data.fristerNeste.length}</div><div class="rapport-stat-label">Frister ${nesteLabel.toLowerCase()}</div></div>`}
         <div class="rapport-stat" style="${data.forfalt.length > 0 ? 'background:#fdeaea;' : ''}"><div class="rapport-stat-tall" style="${data.forfalt.length > 0 ? 'color:#c0392b;' : ''}">${data.forfalt.length}</div><div class="rapport-stat-label">Forfalt</div></div>
       </div>`;
 
@@ -4308,10 +4498,10 @@
       html += `</div>`;
     }
 
-    // Denne uken — pågående
-    html += `<div class="rapport-seksjon"><div class="rapport-seksjon-tittel">Denne uken (${fmtPer(data.denneMandag, data.denneSondag)})</div>`;
+    // Denne perioden — pågående
+    html += `<div class="rapport-seksjon"><div class="rapport-seksjon-tittel">${denneLabel} (${fmtPer(data.denneMandag, data.denneSondag)})</div>`;
     if (data.aktDenne.length === 0 && data.fristerDenne.length === 0) {
-      html += `<div class="rapport-tom">Ingenting planlagt denne uken.</div>`;
+      html += `<div class="rapport-tom">Ingenting planlagt i denne perioden.</div>`;
     } else {
       data.aktDenne.forEach(a => {
         const kat = getKat(a.type);
@@ -4336,10 +4526,11 @@
     }
     html += `</div>`;
 
-    // Neste 2 uker
-    html += `<div class="rapport-seksjon"><div class="rapport-seksjon-tittel">Neste 2 uker (${fmtPer(data.nesteMandag, data.nesteSluttSondag)})</div>`;
+    // Neste 2 perioder
+    if (!data.erEgendefinert) {
+    html += `<div class="rapport-seksjon"><div class="rapport-seksjon-tittel">${nesteLabel} (${fmtPer(data.nesteMandag, data.nesteSluttSondag)})</div>`;
     if (data.aktNeste.length === 0 && data.fristerNeste.length === 0) {
-      html += `<div class="rapport-tom">Ingenting planlagt de neste to ukene.</div>`;
+      html += `<div class="rapport-tom">Ingenting planlagt fremover.</div>`;
     } else {
       data.aktNeste.forEach(a => {
         const kat = getKat(a.type);
@@ -4363,9 +4554,11 @@
       });
     }
     html += `</div>`;
+    } // end !erEgendefinert (neste-seksjon)
 
-    // Fullført forrige uke — flyttet til bunnen
-    html += `<div class="rapport-seksjon"><div class="rapport-seksjon-tittel">Fullført forrige uke (${fmtPer(data.forrigeMandag, data.forrigeSondag)})</div>`;
+    // Fullført forrige periode — flyttet til bunnen, hopp over ved egendefinert
+    if (!data.erEgendefinert) {
+    html += `<div class="rapport-seksjon"><div class="rapport-seksjon-tittel">Fullført ${forrigeLabel.toLowerCase()} (${fmtPer(data.forrigeMandag, data.forrigeSondag)})</div>`;
     if (data.fullfortForrige.length === 0) {
       html += `<div class="rapport-tom">Ingen registrerte fullføringer denne perioden.</div>`;
     } else {
@@ -4383,27 +4576,70 @@
       });
     }
     html += `</div>`;
+    } // end !erEgendefinert (fullfort-seksjon)
+
+    // For egendefinert: vis fullført i perioden
+    if (data.erEgendefinert) {
+      const fullfortIPer = [
+        ...oppgaver.filter(o => o.fullfort && o.fullfortDato && o.fullfortDato >= rapportEgFra && o.fullfortDato <= rapportEgTil)
+          .filter(o => !katFilter || o.kategoriId === katFilter || (o.aktivitetId && aktiviteter.find(a => a.id === o.aktivitetId)?.type === katFilter))
+          .map(o => ({ type: 'milepæl', tittel: o.beskrivelse, dato: o.fullfortDato, obj: o })),
+        ...todos.filter(t => t.fullfort && t.fullfortDato && t.fullfortDato >= rapportEgFra && t.fullfortDato <= rapportEgTil)
+          .filter(t => !katFilter || t.kategoriId === katFilter)
+          .map(t => ({ type: 'to do', tittel: t.tittel, dato: t.fullfortDato, obj: t }))
+      ].sort((a,b) => a.dato.localeCompare(b.dato));
+
+      html += `<div class="rapport-seksjon"><div class="rapport-seksjon-tittel">Fullført i perioden</div>`;
+      if (fullfortIPer.length === 0) {
+        html += `<div class="rapport-tom">Ingen registrerte fullføringer i perioden.</div>`;
+      } else {
+        fullfortIPer.forEach(item => {
+          const kat = item.obj.kategoriId ? getKat(item.obj.kategoriId) :
+                      (item.obj.aktivitetId ? getKat(aktiviteter.find(a => a.id === item.obj.aktivitetId)?.type) : null);
+          html += `<div class="rapport-item">
+            ${kat ? `<span class="rapport-pill" style="border-color:${kat.farge};color:${kat.farge};">${kat.label}</span>` : `<span class="rapport-pill" style="border-color:var(--kant);color:var(--tekst-sek);">${item.type}</span>`}
+            <div style="flex:1;">
+              <div class="rapport-item-tittel">${item.tittel}</div>
+              <div class="rapport-item-meta">Fullført ${fmtDatoFra(item.dato)}</div>
+            </div>
+          </div>`;
+        });
+      }
+      html += `</div>`;
+    }
 
     body.innerHTML = html;
     document.getElementById('rapportModal').classList.add('vis');
   }
 
   function eksporterRapportMarkdown() {
-    const katFilter = window._aktivRapportKatFilter || null;
-    const data = beregnRapportData(katFilter);
-    const fmtPer = (a, b) => `${fmtDato(a)} – ${fmtDato(b)}`;
-    const tittel = data.kat ? `Statusrapport — ${data.kat.label}` : `Statusrapport — Horizon Proposal`;
+    const katFilter   = window._aktivRapportKatFilter || null;
+    const periode     = window._aktivRapportPeriode || 'uke';
+    const customStart = window._aktivRapportEgFra || '';
+    const customSlutt = window._aktivRapportEgTil || '';
+    const data = beregnRapportData(katFilter, periode, customStart, customSlutt);
+    const fmtPer = (a, b) => a && b ? `${fmtDato(a)} – ${fmtDato(b)}` : '';
+    const tittel = data.kat ? `Rapport — ${data.kat.label}` : `Rapport — Horizon Proposal`;
+    const denneLabel = data.erEgendefinert ? 'Perioden' :
+      (data.enhetLabel === 'måned' ? 'Denne måneden' :
+       data.enhetLabel === 'kvartal' ? 'Dette kvartalet' : 'Denne uken');
+    const forrigeLabel = data.erEgendefinert ? null :
+      (data.enhetLabel === 'måned' ? 'Forrige måned' :
+       data.enhetLabel === 'kvartal' ? 'Forrige kvartal' : 'Forrige uke');
+    const nesteLabel = data.erEgendefinert ? null :
+      (data.enhetLabel === 'måned' ? 'Neste 2 måneder' :
+       data.enhetLabel === 'kvartal' ? 'Neste 2 kvartal' : 'Neste 2 uker');
 
     let md = `# ${tittel}\n\n`;
-    md += `**Denne uken:** ${fmtPer(data.denneMandag, data.denneSondag)}  \n`;
+    md += `**${denneLabel}:** ${fmtPer(data.denneMandag, data.denneSondag)}  \n`;
     md += `**Generert:** ${fmtDato(data.iDag)} ${data.iDag.getFullYear()}\n\n`;
     md += `---\n\n`;
 
     md += `## Nøkkeltall\n\n`;
     md += `| | |\n|---|---|\n`;
-    md += `| Fullført forrige uke | ${data.fullfortForrige.length} |\n`;
-    md += `| Frister denne uken | ${data.fristerDenne.length} |\n`;
-    md += `| Frister neste 2 uker | ${data.fristerNeste.length} |\n`;
+    if (!data.erEgendefinert) md += `| Fullført ${forrigeLabel.toLowerCase()} | ${data.fullfortForrige.length} |\n`;
+    md += `| Frister ${denneLabel.toLowerCase()} | ${data.fristerDenne.length} |\n`;
+    if (!data.erEgendefinert) md += `| Frister ${nesteLabel.toLowerCase()} | ${data.fristerNeste.length} |\n`;
     md += `| Forfalt | ${data.forfalt.length} |\n\n`;
 
     if (data.forfalt.length > 0) {
@@ -4415,7 +4651,7 @@
       md += `\n`;
     }
 
-    md += `## Denne uken (${fmtPer(data.denneMandag, data.denneSondag)})\n\n`;
+    md += `## ${denneLabel} (${fmtPer(data.denneMandag, data.denneSondag)})\n\n`;
     if (data.aktDenne.length === 0 && data.fristerDenne.length === 0) md += `_Ingenting planlagt._\n\n`;
     else {
       data.aktDenne.forEach(a => {
@@ -4429,7 +4665,8 @@
       md += `\n`;
     }
 
-    md += `## Neste 2 uker (${fmtPer(data.nesteMandag, data.nesteSluttSondag)})\n\n`;
+    if (!data.erEgendefinert) {
+    md += `## ${nesteLabel} (${fmtPer(data.nesteMandag, data.nesteSluttSondag)})\n\n`;
     if (data.aktNeste.length === 0 && data.fristerNeste.length === 0) md += `_Ingenting planlagt._\n\n`;
     else {
       data.aktNeste.forEach(a => {
@@ -4442,14 +4679,35 @@
       });
       md += `\n`;
     }
+    } // end !erEgendefinert (neste)
 
-    md += `## Fullført forrige uke (${fmtPer(data.forrigeMandag, data.forrigeSondag)})\n\n`;
+    if (!data.erEgendefinert) {
+    md += `## Fullført ${forrigeLabel.toLowerCase()} (${fmtPer(data.forrigeMandag, data.forrigeSondag)})\n\n`;
     if (data.fullfortForrige.length === 0) md += `_Ingen registrerte fullføringer._\n\n`;
     else {
       data.fullfortForrige.forEach(item => {
         md += `- ✓ **${item.tittel}** _(${item.type}, ${fmtDatoFra(item.dato)})_\n`;
       });
       md += `\n`;
+    }
+    } else {
+      // Egendefinert: fullført i perioden
+      const fullfortIPer = [
+        ...oppgaver.filter(o => o.fullfort && o.fullfortDato && o.fullfortDato >= customStart && o.fullfortDato <= customSlutt)
+          .filter(o => !katFilter || o.kategoriId === katFilter || (o.aktivitetId && aktiviteter.find(a => a.id === o.aktivitetId)?.type === katFilter))
+          .map(o => ({ type: 'milepæl', tittel: o.beskrivelse, dato: o.fullfortDato })),
+        ...todos.filter(t => t.fullfort && t.fullfortDato && t.fullfortDato >= customStart && t.fullfortDato <= customSlutt)
+          .filter(t => !katFilter || t.kategoriId === katFilter)
+          .map(t => ({ type: 'to do', tittel: t.tittel, dato: t.fullfortDato }))
+      ].sort((a,b) => a.dato.localeCompare(b.dato));
+      md += `## Fullført i perioden\n\n`;
+      if (fullfortIPer.length === 0) md += `_Ingen registrerte fullføringer._\n\n`;
+      else {
+        fullfortIPer.forEach(item => {
+          md += `- ✓ **${item.tittel}** _(${item.type}, ${fmtDatoFra(item.dato)})_\n`;
+        });
+        md += `\n`;
+      }
     }
 
     md += `---\n\n_Generert av Horizon Proposal-appen._\n`;
@@ -4464,26 +4722,94 @@
     URL.revokeObjectURL(url);
   }
 
+  let rapportValgtPeriode = 'uke'; // 'uke' | 'maaned' | 'kvartal' | 'egendefinert'
+  let rapportEgFra = '';
+  let rapportEgTil = '';
+
   function åpneRapportVelger() {
     const body = document.getElementById('rapportVelgerBody');
     body.innerHTML = '';
-    body.style.cssText = 'padding:18px 22px;display:flex;flex-direction:column;gap:8px;';
+    body.style.cssText = 'padding:18px 22px;display:flex;flex-direction:column;gap:14px;';
 
-    const lagValg = (label, sub, farge, onClick, ikon) => {
+    // ── Tidsperiode-velger ──
+    const periodeBlokk = document.createElement('div');
+    const periodeLabel = document.createElement('div');
+    periodeLabel.style.cssText = 'font-size:10px;font-weight:700;font-family:"Syne",sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;padding:0 2px;';
+    periodeLabel.textContent = 'Tidsperiode';
+    periodeBlokk.appendChild(periodeLabel);
+
+    const periodeRad = document.createElement('div');
+    periodeRad.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;';
+    const periodeValg = [
+      { id: 'uke',         label: 'Uke' },
+      { id: 'maaned',      label: 'Måned' },
+      { id: 'kvartal',     label: 'Kvartal' },
+      { id: 'egendefinert', label: 'Egendefinert' }
+    ];
+    periodeValg.forEach(p => {
+      const pBtn = document.createElement('button');
+      const aktiv = p.id === rapportValgtPeriode;
+      pBtn.style.cssText = `flex:1;min-width:78px;padding:8px 6px;border:1.5px solid ${aktiv ? 'var(--grønn)' : 'var(--kant)'};border-radius:var(--rs);background:${aktiv ? 'var(--grønn)' : 'var(--hvit)'};color:${aktiv ? 'white' : 'var(--tekst-sek)'};cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;transition:all .15s;`;
+      pBtn.textContent = p.label;
+      pBtn.onclick = () => {
+        rapportValgtPeriode = p.id;
+        åpneRapportVelger();
+      };
+      periodeRad.appendChild(pBtn);
+    });
+    periodeBlokk.appendChild(periodeRad);
+
+    // Egendefinert dato-felt
+    if (rapportValgtPeriode === 'egendefinert') {
+      const egRad = document.createElement('div');
+      egRad.style.cssText = 'display:flex;gap:8px;margin-top:10px;';
+      const fra = document.createElement('input');
+      fra.type = 'date'; fra.value = rapportEgFra;
+      fra.style.cssText = 'flex:1;border:1px solid var(--kant);border-radius:var(--rs);padding:8px 10px;font-family:Nunito,sans-serif;font-size:14px;color:var(--tekst);background:var(--bg);';
+      fra.oninput = () => rapportEgFra = fra.value;
+      const til = document.createElement('input');
+      til.type = 'date'; til.value = rapportEgTil;
+      til.style.cssText = fra.style.cssText;
+      til.oninput = () => rapportEgTil = til.value;
+      const fraLabel = document.createElement('div'); fraLabel.style.cssText = 'flex:1;'; fraLabel.innerHTML = '<div style="font-size:10px;color:var(--tekst-sek);font-weight:700;margin-bottom:3px;">FRA</div>'; fraLabel.appendChild(fra);
+      const tilLabel = document.createElement('div'); tilLabel.style.cssText = 'flex:1;'; tilLabel.innerHTML = '<div style="font-size:10px;color:var(--tekst-sek);font-weight:700;margin-bottom:3px;">TIL</div>'; tilLabel.appendChild(til);
+      egRad.appendChild(fraLabel); egRad.appendChild(tilLabel);
+      periodeBlokk.appendChild(egRad);
+    }
+    body.appendChild(periodeBlokk);
+
+    // ── Omfang-velger ──
+    const omfangBlokk = document.createElement('div');
+    const omfangLabel = document.createElement('div');
+    omfangLabel.style.cssText = 'font-size:10px;font-weight:700;font-family:"Syne",sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;padding:0 2px;';
+    omfangLabel.textContent = 'Omfang';
+    omfangBlokk.appendChild(omfangLabel);
+
+    const omfangListe = document.createElement('div');
+    omfangListe.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
+
+    const lagValg = (label, sub, farge, onClick) => {
       const btn = document.createElement('button');
-      btn.style.cssText = `display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--kant);border-radius:var(--rs);background:var(--hvit);cursor:pointer;text-align:left;transition:all .15s;font-family:'Nunito',sans-serif;`;
+      btn.style.cssText = `display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--kant);border-radius:var(--rs);background:var(--hvit);cursor:pointer;text-align:left;transition:all .15s;font-family:'Nunito',sans-serif;`;
       btn.onmouseover = () => { btn.style.borderColor = farge; btn.style.background = farge + '12'; };
       btn.onmouseout  = () => { btn.style.borderColor = 'var(--kant)'; btn.style.background = 'var(--hvit)'; };
-      btn.onclick = () => { lukkModal('rapportVelgerModal'); onClick(); };
+      btn.onclick = () => {
+        if (rapportValgtPeriode === 'egendefinert' && (!rapportEgFra || !rapportEgTil)) {
+          alert('Velg både fra- og til-dato før du genererer rapporten.');
+          return;
+        }
+        lukkModal('rapportVelgerModal');
+        onClick();
+      };
 
       const dot = document.createElement('div');
-      dot.style.cssText = `width:14px;height:14px;border-radius:50%;background:${farge};flex-shrink:0;`;
+      dot.style.cssText = `width:12px;height:12px;border-radius:50%;background:${farge};flex-shrink:0;`;
       btn.appendChild(dot);
 
       const txt = document.createElement('div');
       txt.style.flex = '1';
-      txt.innerHTML = `<div style="font-weight:700;font-size:14px;color:var(--tekst);">${label}</div>
-        ${sub ? `<div style="font-size:11px;color:var(--tekst-sek);margin-top:2px;">${sub}</div>` : ''}`;
+      txt.innerHTML = `<div style="font-weight:700;font-size:13px;color:var(--tekst);">${label}</div>
+        ${sub ? `<div style="font-size:11px;color:var(--tekst-sek);margin-top:1px;">${sub}</div>` : ''}`;
       btn.appendChild(txt);
 
       const pil = document.createElement('div');
@@ -4491,16 +4817,12 @@
       pil.textContent = '›';
       btn.appendChild(pil);
 
-      body.appendChild(btn);
+      omfangListe.appendChild(btn);
     };
 
-    lagValg('Hele prosjektet', 'Statusrapport for alle kategorier', 'var(--grønn)', () => åpneRapport());
+    lagValg('Hele prosjektet', 'Alle kategorier', 'var(--grønn)', () => åpneRapport(null));
 
     if (kategorier.length > 0) {
-      const skille = document.createElement('div');
-      skille.style.cssText = 'font-size:10px;font-weight:700;font-family:"Syne",sans-serif;color:var(--tekst-sek);text-transform:uppercase;letter-spacing:0.5px;margin-top:6px;margin-bottom:-2px;padding:0 2px;';
-      skille.textContent = 'Eller velg kategori';
-      body.appendChild(skille);
       kategorier.forEach(k => {
         const stats = oppgaver.filter(o => {
           const akt = o.aktivitetId ? aktiviteter.find(a => a.id === o.aktivitetId) : null;
@@ -4509,6 +4831,9 @@
         lagValg(k.label, `${stats} milepæl${stats === 1 ? '' : 'er'}`, k.farge, () => åpneRapport(k.id));
       });
     }
+
+    omfangBlokk.appendChild(omfangListe);
+    body.appendChild(omfangBlokk);
 
     document.getElementById('rapportVelgerModal').classList.add('vis');
   }
@@ -4538,6 +4863,7 @@
 
   function init() {
     hent();
+    lastHovedFilter();
     ryddFullforte();
     renderTodos();
     renderTidslinje();
@@ -4649,6 +4975,7 @@
 
       // Last inn appen med sky-data
       if (typeof hent === 'function') hent();
+      if (typeof lastHovedFilter === 'function') lastHovedFilter();
       if (typeof ryddFullforte === 'function') ryddFullforte();
       if (typeof oppdaterAktivPanel === 'function') oppdaterAktivPanel();
       if (typeof oppdaterForfaltBadge === 'function') oppdaterForfaltBadge();
@@ -4681,6 +5008,7 @@
           if (data.filterAkt) localStorage.setItem('lp_fa', nyFA);
           if (data.filterOpp) localStorage.setItem('lp_fo', nyFO);
           if (typeof hent === 'function') hent();
+      if (typeof lastHovedFilter === 'function') lastHovedFilter();
           if (typeof ryddFullforte === 'function') ryddFullforte();
           if (typeof oppdaterAktivPanel === 'function') oppdaterAktivPanel();
           if (typeof oppdaterForfaltBadge === 'function') oppdaterForfaltBadge();        }
